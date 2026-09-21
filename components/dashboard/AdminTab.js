@@ -31,6 +31,9 @@ export default function AdminTab({ onNotify }) {
   const [emailForm, setEmailForm] = useState({ to: '', subject: '', message: '' });
   const [isSendingEmail, setIsSendingEmail] = useState(false);
 
+  // Edit Assigned Child state
+  const [editingChildUser, setEditingChildUser] = useState(null); // { user, selectedChild }
+
   // Nameday state
   const [teachers, setTeachers] = useState(() => AppStore.getTeachers());
   const [namedayStatus, setNamedayStatus] = useState(null);
@@ -50,6 +53,19 @@ export default function AdminTab({ onNotify }) {
 
   const closeConfirmDialog = () => {
     setConfirmDialog(prev => ({ ...prev, isOpen: false }));
+  };
+
+  const handleSaveAssignedChild = async (user, newChildName) => {
+    const updated = users.map(u => {
+      if (u.id === user.id || u.email?.toLowerCase() === user.email?.toLowerCase()) {
+        return { ...u, childName: newChildName };
+      }
+      return u;
+    });
+    await AppStore.saveUsers(updated);
+    setUsers(AppStore.getUsers());
+    setEditingChildUser(null);
+    onNotify?.(`Tanuló sikeresen hozzárendelve: ${user.email} ➔ ${newChildName || 'Nincs'}`);
   };
 
   const showAlert = (title, message, type = 'warning') => {
@@ -750,14 +766,25 @@ export default function AdminTab({ onNotify }) {
                     <tr key={u.id}>
                       <td><strong>{u.email}</strong></td>
                       <td>
-                        {u.childName ? (
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
                           <div>
-                            <strong>{u.childName}</strong>
-                            <small style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.75rem' }}>
-                              (Regisztrált szülők száma a diákhoz: {regCount}/2)
-                            </small>
+                            <strong>{u.childName || <span style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>Nincs hozzárendelve</span>}</strong>
+                            {u.childName && (
+                              <small style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.75rem' }}>
+                                (Regisztrált szülők száma a diákhoz: {regCount}/2)
+                              </small>
+                            )}
                           </div>
-                        ) : '—'}
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-secondary"
+                            onClick={() => setEditingChildUser({ user: u, selectedChild: u.childName || students[0] })}
+                            title="Hozzárendelt tanuló módosítása"
+                            style={{ padding: '0.2rem 0.45rem', fontSize: '0.75rem', borderRadius: '4px', flexShrink: 0 }}
+                          >
+                            ✏️
+                          </button>
+                        </div>
                       </td>
                       <td>
                         {isFixedAdmin(u.email) ? (
@@ -960,6 +987,46 @@ export default function AdminTab({ onNotify }) {
         onConfirm={confirmDialog.onConfirm}
         onClose={closeConfirmDialog}
       />
+
+      {/* Student Assignment Modal */}
+      {editingChildUser && (
+        <div className="modal-overlay" onClick={() => setEditingChildUser(null)}>
+          <div className="modal-card" style={{ maxWidth: '480px' }} onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3 style={{ margin: 0, fontSize: '1.15rem' }}>🎓 Tanuló Hozzárendelése / Módosítása</h3>
+              <button type="button" className="close-btn" onClick={() => setEditingChildUser(null)}>✕</button>
+            </div>
+            <div style={{ padding: '1.25rem 0' }}>
+              <p style={{ fontSize: '0.9rem', marginBottom: '1rem' }}>
+                Válassza ki, hogy <strong style={{ color: 'var(--brand-accent)' }}>{editingChildUser.user.email}</strong> melyik 11. D osztályos tanulóhoz tartozzon:
+              </p>
+              <div className="form-group">
+                <label>11. D Tanuló Neve (37 fős névsor):</label>
+                <select
+                  value={editingChildUser.selectedChild}
+                  onChange={e => setEditingChildUser({ ...editingChildUser, selectedChild: e.target.value })}
+                  style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: 'var(--radius-sm)', background: 'var(--bg-input)', border: '1px solid var(--border-color)', color: 'var(--text-main)', fontSize: '0.92rem' }}
+                >
+                  <option value="">— Nincs tanuló hozzárendelve —</option>
+                  {students.map((student, idx) => (
+                    <option key={idx} value={student}>{idx + 1}. {student}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
+              <button type="button" className="btn btn-secondary" onClick={() => setEditingChildUser(null)}>Mégse</button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => handleSaveAssignedChild(editingChildUser.user, editingChildUser.selectedChild)}
+              >
+                💾 Mentés
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
