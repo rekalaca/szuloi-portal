@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { AppStore } from '@/lib/store';
+import { exportToExcel, printTableToPDF } from '@/lib/exporter';
 
 export default function BankSheetY2Tab({ currentUser }) {
   const [filterText, setFilterText] = useState('');
@@ -25,6 +26,130 @@ export default function BankSheetY2Tab({ currentUser }) {
     return `tanuló #${r.id}`.includes(cleanFilter) || r.id.toString().includes(cleanFilter);
   });
 
+  const handleExportExcel = () => {
+    const headers = [
+      '#', 'Tanuló Neve', '09. hó', '10. hó', '11. hó', '12. hó', '01. hó', '02. hó', '03. hó', '04. hó', '05. hó', '06. hó', 'Befizetve', 'Hátralék', 'Kirándulás', 'Megjegyzés'
+    ];
+    const rows = filteredRecords.map(r => {
+      const isChild = currentUser?.childName?.toLowerCase() === r.name.toLowerCase();
+      const canView = isAdmin || isChild;
+      return [
+        r.id,
+        canView ? r.name : `11. D Tanuló #${r.id}`,
+        canView ? (r.m09 || '') : '••••',
+        canView ? (r.m10 || '') : '••••',
+        canView ? (r.m11 || '') : '••••',
+        canView ? (r.m12 || '') : '••••',
+        canView ? (r.m01 || '') : '••••',
+        canView ? (r.m02 || '') : '••••',
+        canView ? (r.m03 || '') : '••••',
+        canView ? (r.m04 || '') : '••••',
+        canView ? (r.m05 || '') : '••••',
+        canView ? (r.m06 || '') : '••••',
+        canView ? r.total : '••••',
+        canView ? r.debt : '••••',
+        canView ? (r.trip || '') : '••••',
+        canView ? (r.note || '') : ''
+      ];
+    });
+
+    rows.push([
+      '', 'Összesen (Havi bevételek)',
+      summary.monthlyIncomeTotals.m09 || '0 Ft',
+      summary.monthlyIncomeTotals.m10 || '0 Ft',
+      summary.monthlyIncomeTotals.m11 || '0 Ft',
+      summary.monthlyIncomeTotals.m12 || '0 Ft',
+      summary.monthlyIncomeTotals.m01 || '0 Ft',
+      summary.monthlyIncomeTotals.m02 || '0 Ft',
+      summary.monthlyIncomeTotals.m03 || '0 Ft',
+      summary.monthlyIncomeTotals.m04 || '0 Ft',
+      summary.monthlyIncomeTotals.m05 || '0 Ft',
+      summary.monthlyIncomeTotals.m06 || '0 Ft',
+      summary.monthlyIncomeTotals.total,
+      summary.monthlyIncomeTotals.debtTotal,
+      summary.monthlyIncomeTotals.tripTotal,
+      ''
+    ]);
+
+    const summaryData = [
+      { label: '1. tanévről áthozott maradvány:', value: `${(summary.carriedForward2024 || 627081).toLocaleString('hu-HU')} Ft` },
+      { label: '2. Tanévi Összes Befizetés:', value: `${(summary.yearIncome2025 || 714000).toLocaleString('hu-HU')} Ft` },
+      { label: '2. Tanévi Összes Kiadás:', value: `${(summary.totalExpenses || 109660).toLocaleString('hu-HU')} Ft` },
+      { label: 'Egyéb bevételek:', value: `${(summary.otherIncome || 16000).toLocaleString('hu-HU')} Ft` },
+      { label: 'Záró OTP Számlaegyenleg (3. év nyitó):', value: `${(summary.closingOtpBalance || 1247421).toLocaleString('hu-HU')} Ft` }
+    ];
+
+    exportToExcel({
+      filename: 'szechenyi_11d_2_tanev_banki_elszamolas_2025_2026',
+      sheetTitle: 'Széchenyi 11. D - 2. tanév (2025/2026) Banki Elszámolás',
+      headers,
+      rows,
+      summaryData
+    });
+  };
+
+  const handlePrintPDF = () => {
+    const headers = [
+      '#', 'Tanuló Neve', '09. hó', '10. hó', '11. hó', '12. hó', '01. hó', '02. hó', '03. hó', '04. hó', '05. hó', '06. hó', 'Befizetve', 'Hátralék', 'Kirándulás', 'Megjegyzés'
+    ];
+    const rows = filteredRecords.map(r => {
+      const isChild = currentUser?.childName?.toLowerCase() === r.name.toLowerCase();
+      const canView = isAdmin || isChild;
+      return [
+        r.id,
+        canView ? r.name : `11. D Tanuló #${r.id}`,
+        canView ? (r.m09 || '—') : '••••',
+        canView ? (r.m10 || '—') : '••••',
+        canView ? (r.m11 || '—') : '••••',
+        canView ? (r.m12 || '—') : '••••',
+        canView ? (r.m01 || '—') : '••••',
+        canView ? (r.m02 || '—') : '••••',
+        canView ? (r.m03 || '—') : '••••',
+        canView ? (r.m04 || '—') : '••••',
+        canView ? (r.m05 || '—') : '••••',
+        canView ? (r.m06 || '—') : '••••',
+        canView ? r.total : '••••',
+        canView ? r.debt : '••••',
+        canView ? (r.trip || '—') : '••••',
+        canView ? (r.note || '—') : ''
+      ];
+    });
+
+    rows.push([
+      '', 'Összesen (Havi bevételek)',
+      summary.monthlyIncomeTotals.m09 || '0 Ft',
+      summary.monthlyIncomeTotals.m10 || '0 Ft',
+      summary.monthlyIncomeTotals.m11 || '0 Ft',
+      summary.monthlyIncomeTotals.m12 || '0 Ft',
+      summary.monthlyIncomeTotals.m01 || '0 Ft',
+      summary.monthlyIncomeTotals.m02 || '0 Ft',
+      summary.monthlyIncomeTotals.m03 || '0 Ft',
+      summary.monthlyIncomeTotals.m04 || '0 Ft',
+      summary.monthlyIncomeTotals.m05 || '0 Ft',
+      summary.monthlyIncomeTotals.m06 || '0 Ft',
+      summary.monthlyIncomeTotals.total,
+      summary.monthlyIncomeTotals.debtTotal,
+      summary.monthlyIncomeTotals.tripTotal,
+      '—'
+    ]);
+
+    const summaryData = [
+      { label: '1. tanévről áthozott maradvány', value: `${(summary.carriedForward2024 || 627081).toLocaleString('hu-HU')} Ft` },
+      { label: '2. Tanévi Összes Befizetés', value: `${(summary.yearIncome2025 || 714000).toLocaleString('hu-HU')} Ft` },
+      { label: '2. Tanévi Összes Kiadás', value: `${(summary.totalExpenses || 109660).toLocaleString('hu-HU')} Ft` },
+      { label: 'Egyéb bevételek', value: `${(summary.otherIncome || 16000).toLocaleString('hu-HU')} Ft` },
+      { label: 'Záró OTP Számlaegyenleg (3. év nyitó)', value: `${(summary.closingOtpBalance || 1247421).toLocaleString('hu-HU')} Ft` }
+    ];
+
+    printTableToPDF({
+      title: '2. tanév (2025/2026) Banki Elszámolás',
+      subtitle: 'Széchenyi István Gimnázium és Technikum • 11. D Osztálypénz és Banki Nyilvántartás',
+      headers,
+      rows,
+      summaryData
+    });
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <div className="table-card">
@@ -36,7 +161,25 @@ export default function BankSheetY2Tab({ currentUser }) {
             </p>
           </div>
 
-          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '0.65rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              className="btn btn-sm btn-secondary"
+              onClick={handleExportExcel}
+              title="Táblázat letöltése Excel (.xlsx) fájlként"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '0.45rem 0.85rem' }}
+            >
+              📊 Excel (.xlsx)
+            </button>
+            <button
+              type="button"
+              className="btn btn-sm btn-secondary"
+              onClick={handlePrintPDF}
+              title="Táblázat nyomtatása vagy mentése PDF-ként"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '0.45rem 0.85rem' }}
+            >
+              📄 PDF / Nyomtatás
+            </button>
             <input
               type="text"
               placeholder={isAdmin ? "Szűrés tanuló nevére..." : "Szűrés tanuló sorszámára (#)..."}
