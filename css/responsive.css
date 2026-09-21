@@ -1,0 +1,676 @@
+/* ==========================================================================
+   Széchenyi 11. D Osztály Portál - Reszponzív & Mobil Stíluslap
+   Teljes körű optimalizáció Mobil (320px - 767px) és Tablet (768px - 1024px) nézetekre.
+   ========================================================================== */
+
+/* ==========================================================================
+   1. Animált Hamburger Gomb & Mobil Drawer Alap Stílusok
+   ========================================================================== */
+.mobile-hamburger-btn {
+    display: none;
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-main);
+    transition: var(--transition-fast);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
+    position: relative;
+}
+
+.mobile-hamburger-btn:hover {
+    border-color: var(--brand-accent);
+    color: var(--brand-accent);
+}
+
+.hamburger-box {
+    width: 22px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    pointer-events: none;
+}
+
+.hamburger-inner,
+.hamburger-inner::before,
+.hamburger-inner::after {
+    width: 22px;
+    height: 2.5px;
+    background-color: currentColor;
+    border-radius: 4px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.28s ease, top 0.28s ease, opacity 0.2s ease;
+}
+
+.hamburger-inner {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.hamburger-inner::before {
+    content: '';
+    top: -6.5px;
+}
+
+.hamburger-inner::after {
+    content: '';
+    top: 6.5px;
+}
+
+.mobile-hamburger-btn.is-active .hamburger-inner {
+    transform: translateY(-50%) rotate(45deg);
+    background-color: var(--brand-accent);
+}
+
+.mobile-hamburger-btn.is-active .hamburger-inner::before {
+    top: 0;
+    opacity: 0;
+}
+
+.mobile-hamburger-btn.is-active .hamburger-inner::after {
+    top: 0;
+    transform: rotate(-90deg);
+    background-color: var(--brand-accent);
+}
+
+/* Mobil Drawer & Háttér Elhomályosítás */
+.mobile-nav-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(5, 10, 18, 0.78);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s;
+}
+
+.mobile-nav-backdrop.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.mobile-nav-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 86%;
+    max-width: 360px;
+    height: 100%;
+    height: 100dvh;
+    background: var(--bg-card);
+    z-index: 999;
+    box-shadow: -10px 0 35px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    transform: translateX(105%);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    border-left: 1px solid var(--border-color);
+}
+
+.mobile-nav-drawer.active {
+    transform: translateX(0);
+}
+
+.mobile-drawer-header {
+    padding: 1.25rem 1.4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--bg-surface-elevated);
+}
+
+.mobile-drawer-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.mobile-drawer-logo {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    background: transparent;
+}
+
+.mobile-drawer-close-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.mobile-drawer-close-btn:hover {
+    color: var(--danger-text);
+    border-color: var(--danger-text);
+}
+
+.mobile-user-profile-badge {
+    padding: 1rem 1.4rem;
+    background: var(--bg-surface-elevated);
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.user-avatar-small {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.mobile-nav-list {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.mobile-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.9rem 1.1rem;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    width: 100%;
+}
+
+.mobile-nav-item .nav-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.mobile-nav-item:hover {
+    background: var(--bg-surface-elevated);
+    border-color: var(--border-color);
+}
+
+.mobile-nav-item.active {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.18), rgba(212, 175, 55, 0.06));
+    border-color: var(--brand-accent);
+    color: var(--brand-accent);
+}
+
+.mobile-nav-item.admin-item {
+    border: 1px dashed var(--brand-accent);
+    color: var(--brand-accent);
+    margin-top: 0.5rem;
+}
+
+.mobile-drawer-footer {
+    padding: 1.2rem;
+    border-top: 1px solid var(--border-subtle);
+    background: var(--bg-surface-elevated);
+}
+
+/* ==========================================================================
+   2. TABLET NÉZET (@media max-width: 1024px)
+   ========================================================================== */
+@media (max-width: 1024px) {
+    .site-header {
+        padding: 0.75rem 1.2rem;
+    }
+
+    .brand-titles h1 {
+        font-size: 0.96rem;
+    }
+
+    .brand-titles .class-subtitle {
+        font-size: 0.78rem;
+    }
+
+    .dashboard-wrapper {
+        padding: 1.2rem;
+    }
+
+    .top-3-stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+
+    .news-grid {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.6rem;
+    }
+
+    .szmk-grid {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.6rem;
+    }
+
+    .info-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.4rem;
+    }
+}
+
+/* ==========================================================================
+   3. KÖZÉPES TABLET & MOBIL NÉZET (@media max-width: 900px)
+   ========================================================================== */
+@media (max-width: 900px) {
+    .site-header {
+        padding: 0.45rem 1rem;
+        min-height: 52px;
+    }
+
+    .header-logo {
+        width: 38px;
+        height: 38px;
+    }
+
+    .mobile-hamburger-btn {
+        display: flex;
+    }
+
+    .desktop-logout-action,
+    .desktop-user-info,
+    .desktop-brand-titles {
+        display: none !important;
+    }
+
+    .sub-header-nav-container {
+        display: none !important;
+    }
+
+    .top-3-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .stat-card-mini.stat-monthly-fee {
+        grid-column: span 2;
+    }
+
+    .section-title-row {
+        padding: 1.3rem 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .section-title-row h3 {
+        font-size: 1.2rem;
+    }
+
+    .home-card-block {
+        padding: 1.6rem;
+    }
+
+    .roster-search-input {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+
+    .home-card-header-flex {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .home-card-header-flex > div:last-child {
+        width: 100%;
+    }
+}
+
+/* ==========================================================================
+   4. OKOSTELEFON NÉZET (@media max-width: 680px)
+   ========================================================================== */
+@media (max-width: 680px) {
+    .site-header {
+        padding: 0.65rem 0.9rem;
+    }
+
+    .header-logo {
+        width: 38px;
+        height: 38px;
+    }
+
+    .brand-titles h1 {
+        font-size: 0.85rem;
+        line-height: 1.2;
+    }
+
+    .brand-titles .class-subtitle {
+        font-size: 0.72rem;
+    }
+
+    .action-text {
+        display: none;
+    }
+
+    .header-search-btn,
+    .theme-toggle-btn {
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        justify-content: center;
+    }
+
+    .header-actions {
+        gap: 0.45rem;
+    }
+
+    .dashboard-wrapper {
+        padding: 0.9rem 0.65rem;
+    }
+
+    /* 3 Kis Kártya Mobil Egymás Alatt */
+    .top-3-stats-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        margin-bottom: 1.4rem;
+    }
+
+    .stat-card-mini.stat-monthly-fee {
+        grid-column: span 1;
+    }
+
+    .stat-card-mini {
+        padding: 1rem 1.15rem;
+    }
+
+    .stat-card-mini .stat-icon-wrap {
+        width: 42px;
+        height: 42px;
+        font-size: 1.3rem;
+    }
+
+    .stat-card-mini .stat-value {
+        font-size: 1.25rem;
+    }
+
+    /* Banki táblázat mobil kártyás/görgethető optimalizáció */
+    .bank-sheet-card {
+        padding: 1.1rem 0.85rem;
+        border-radius: var(--radius-md);
+    }
+
+    .bank-sheet-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .privacy-notice-badge {
+        font-size: 0.74rem;
+        line-height: 1.4;
+    }
+
+    .mobile-table-hint {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--brand-accent);
+        background: rgba(212, 175, 55, 0.1);
+        border: 1px dashed var(--brand-accent);
+        border-radius: var(--radius-sm);
+        padding: 0.5rem 0.8rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .bank-table-scroll-wrapper {
+        border: 1px solid var(--border-color);
+        box-shadow: inset -6px 0 10px -4px rgba(0,0,0,0.35);
+        position: relative;
+    }
+
+    .bank-data-table {
+        font-size: 0.78rem;
+    }
+
+    .bank-data-table th,
+    .bank-data-table td {
+        padding: 0.55rem 0.5rem;
+    }
+
+    /* Rögzített tanulónév oszlop vízszintes görgetésnél mobilon */
+    .bank-data-table th.col-name,
+    .bank-data-table td.col-name {
+        position: sticky;
+        left: 0;
+        z-index: 5;
+        background: var(--bg-surface-elevated);
+        box-shadow: 3px 0 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .bank-data-table tr.my-child-row td.col-name {
+        background: #272110;
+    }
+
+    [data-theme="light"] .bank-data-table tr.my-child-row td.col-name {
+        background: #fdf6e2;
+    }
+
+    .bank-summary-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    /* Hírek Kártyák Mobil */
+    .news-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .news-card {
+        padding: 1.4rem;
+    }
+
+    .news-image-wrap {
+        margin: -1.4rem -1.4rem 1.2rem -1.4rem;
+        min-height: 180px;
+        max-height: 360px;
+    }
+
+    .news-card-img {
+        max-height: 360px;
+    }
+
+    .news-title {
+        font-size: 1.12rem;
+    }
+
+    .news-content {
+        font-size: 0.88rem;
+    }
+
+    /* SZMK Kártyák Mobil */
+    .szmk-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .szmk-card {
+        padding: 1.5rem;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1.2rem;
+    }
+
+    .szmk-info {
+        width: 100%;
+    }
+
+    .szmk-contacts-list {
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .szmk-action-buttons {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.6rem;
+    }
+
+    .btn-social {
+        justify-content: center;
+        width: 100%;
+        padding: 0.75rem 1rem;
+    }
+
+    .szmk-note-card {
+        padding: 1.1rem 1.2rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 0.6rem;
+    }
+
+    /* Főoldal Hero Fejléc Kártya Mobil */
+    .home-hero-header-card {
+        padding: 1.5rem 1.25rem;
+    }
+
+    .school-main-title {
+        font-size: 1.15rem;
+        line-height: 1.35;
+    }
+
+    .class-main-subtitle {
+        gap: 0.4rem;
+    }
+
+    .class-main-subtitle span {
+        font-size: 0.74rem;
+        padding: 2px 8px;
+    }
+
+    .home-hero-desc {
+        font-size: 0.85rem;
+    }
+
+    /* Főoldal Tanulók Grid */
+    .students-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .student-roster-card {
+        padding: 0.9rem 1rem;
+    }
+
+    .teachers-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    /* Modálok Mobil Optimalizáció */
+    .modal-container {
+        width: 95%;
+        max-height: 88vh;
+        border-radius: var(--radius-md);
+    }
+
+    .modal-header {
+        padding: 1rem 1.2rem;
+    }
+
+    .modal-header h3 {
+        font-size: 1rem;
+    }
+
+    .modal-body {
+        padding: 1.1rem;
+        font-size: 0.86rem;
+    }
+
+    .modal-footer {
+        padding: 0.9rem 1.1rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .modal-footer .btn {
+        width: 100%;
+    }
+
+    /* Lebegő kereső mobilon teljes szélességben */
+    .floating-search-container {
+        width: 95%;
+        margin-top: 10px;
+    }
+
+    .floating-search-input-wrap {
+        padding: 0.75rem 1rem;
+    }
+
+    .floating-search-input {
+        font-size: 0.92rem;
+    }
+
+    .auth-card-container {
+        padding: 1.8rem 1.25rem;
+    }
+}
+
+/* ==========================================================================
+   5. EXTRA KIS KIJELZŐK (@media max-width: 380px)
+   ========================================================================== */
+@media (max-width: 380px) {
+    .brand-titles h1 {
+        font-size: 0.78rem;
+    }
+
+    .brand-titles .class-subtitle {
+        font-size: 0.68rem;
+    }
+
+    .header-logo {
+        width: 32px;
+        height: 32px;
+    }
+
+    .site-header {
+        padding: 0.5rem 0.6rem;
+    }
+
+    .stat-card-mini .stat-value {
+        font-size: 1.15rem;
+    }
+}

@@ -1,0 +1,1785 @@
+/* ==========================================================================
+   Széchenyi 11. D Osztály Portál - Fő Stíluslap
+   Tipográfia: Montserrat (Google Fonts)
+   Iskolai arculat: Mélykék (#0e2a47), Prémium Arany (#d4af37)
+   ========================================================================== */
+
+:root {
+    /* Színpaletta - Világos / Nappali Téma */
+    --bg-primary: #f0f4f9;
+    --bg-surface: #ffffff;
+    --bg-surface-elevated: #ffffff;
+    --bg-header: #0e2a47;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f8fafc;
+    --bg-input: #f8fafc;
+    --border-color: #e2e8f0;
+    --border-subtle: #edf2f7;
+
+    --text-main: #1a202c;
+    --text-muted: #64748b;
+    --text-inverse: #ffffff;
+
+    --brand-primary: #0e2a47;
+    --brand-primary-light: #1a416b;
+    --brand-accent: #d4af37;
+    --brand-accent-hover: #c49f2b;
+    --brand-accent-glow: rgba(212, 175, 55, 0.25);
+
+    --success-bg: #e6f9f0;
+    --success-text: #059669;
+    --danger-bg: #fee2e2;
+    --danger-text: #dc2626;
+    --warning-bg: #fef3c7;
+    --warning-text: #d97706;
+
+    --fb-color: #1877f2;
+    --msg-gradient: linear-gradient(135deg, #0084ff 0%, #a033ff 50%, #ff5280 100%);
+
+    /* Világos mód kért árnyéka */
+    --card-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+    --modal-shadow: rgba(50, 50, 93, 0.3) 0px 50px 100px -20px, rgba(0, 0, 0, 0.4) 0px 30px 60px -30px;
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-full: 9999px;
+    --transition-fast: 0.2s ease;
+    --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Sötét / Éjjeli Téma */
+[data-theme="dark"] {
+    --bg-primary: #090e17;
+    --bg-surface: #0f1724;
+    --bg-surface-elevated: #162234;
+    --bg-header: #080d15;
+    --bg-card: #121c2b;
+    --bg-card-hover: #172437;
+    --bg-input: #0b121c;
+    --border-color: #1e2f46;
+    --border-subtle: #162438;
+
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --text-inverse: #ffffff;
+
+    --brand-primary: #1b385a;
+    --brand-primary-light: #254a73;
+    --brand-accent: #e5b23d;
+    --brand-accent-hover: #f3c355;
+    --brand-accent-glow: rgba(229, 178, 61, 0.3);
+
+    --success-bg: rgba(5, 150, 105, 0.15);
+    --success-text: #34d399;
+    --danger-bg: rgba(220, 38, 38, 0.15);
+    --danger-text: #f87171;
+    --warning-bg: rgba(217, 119, 6, 0.15);
+    --warning-text: #fbbf24;
+
+    /* Sötét mód kért árnyéka fehér fénnyel */
+    --card-shadow: rgba(255, 255, 255, 0.12) 0px 10px 36px 0px, rgba(255, 255, 255, 0.06) 0px 0px 0px 1px;
+    --modal-shadow: rgba(255, 255, 255, 0.16) 0px 20px 48px 0px, rgba(255, 255, 255, 0.08) 0px 0px 0px 1px;
+}
+
+/* Reset és Tipográfia: Montserrat */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    color: inherit;
+    text-decoration: none !important;
+    transition: var(--transition-fast);
+}
+
+a:hover,
+a:focus,
+a:active {
+    text-decoration: none !important;
+}
+
+body {
+    font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-main);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: background-color var(--transition-smooth), color var(--transition-smooth);
+    overflow-x: hidden;
+}
+
+.app-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================================================
+   Fejléc (Navbar)
+   ========================================================================== */
+.site-header {
+    background-color: var(--bg-header);
+    color: var(--text-inverse);
+    padding: 0.5rem 1.5rem;
+    min-height: 56px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    position: sticky;
+    top: 0;
+    z-index: 200;
+}
+
+.header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.school-brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none !important;
+    color: inherit;
+    cursor: pointer;
+    user-select: none;
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.school-brand:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
+    text-decoration: none !important;
+}
+
+.header-logo {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    background: transparent;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+    display: block;
+}
+
+.brand-titles h1 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    line-height: 1.25;
+    color: #ffffff;
+}
+
+.brand-titles .class-subtitle {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--brand-accent);
+    display: block;
+    margin-top: 1px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.header-search-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--radius-full);
+    font-size: 0.82rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.header-search-btn:hover {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: var(--brand-accent);
+    color: var(--brand-accent);
+}
+
+.theme-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--radius-full);
+    font-size: 0.82rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.theme-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: var(--brand-accent);
+}
+
+.user-pill-tag {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.35rem 0.8rem;
+    border-radius: var(--radius-full);
+    font-size: 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.user-pill-tag strong { color: #ffffff; }
+.user-pill-tag small { display: block; color: var(--brand-accent); font-size: 0.72rem; }
+.user-pill-tag.admin-tag { border-color: var(--brand-accent); background: rgba(212, 175, 55, 0.15); }
+
+/* ==========================================================================
+   Header alatti FIXÁLT / STICKY Központi Menüsor (Nav Bar)
+   ========================================================================== */
+.sub-header-nav-container {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.65rem 1rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    position: sticky;
+    top: 66px;
+    z-index: 100;
+    backdrop-filter: blur(8px);
+}
+
+.sub-header-nav-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.centered-tab-nav {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.tab-btn {
+    padding: 0.55rem 1.15rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    color: var(--text-main);
+    font-weight: 700;
+    font-size: 0.86rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+}
+
+.tab-btn:hover {
+    border-color: var(--brand-accent);
+    transform: translateY(-1px);
+}
+
+.tab-btn.active {
+    background: var(--brand-primary);
+    color: #ffffff;
+    border-color: var(--brand-primary);
+}
+
+[data-theme="dark"] .tab-btn.active {
+    background: var(--brand-primary-light);
+    color: var(--brand-accent);
+    border-color: var(--brand-accent);
+}
+
+/* ==========================================================================
+   Lebegő Keresősáv és Eredmények Ablak (Floating Search Dropdown)
+   ========================================================================== */
+.floating-search-overlay {
+    position: fixed;
+    top: 68px;
+    left: 0;
+    right: 0;
+    z-index: 150;
+    display: none;
+    justify-content: center;
+    padding: 1rem;
+    pointer-events: none;
+}
+
+.floating-search-overlay.active {
+    display: flex;
+}
+
+.floating-search-container {
+    width: 100%;
+    max-width: 600px;
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    box-shadow: var(--modal-shadow);
+    padding: 0.75rem;
+    pointer-events: auto;
+    animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    border: 1px solid var(--border-color);
+}
+
+.floating-search-input-wrap {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.floating-search-input-wrap .search-icon {
+    position: absolute;
+    left: 14px;
+    font-size: 1.1rem;
+    opacity: 0.6;
+}
+
+.floating-search-input {
+    width: 100%;
+    padding: 0.8rem 2.8rem 0.8rem 2.8rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    background: var(--bg-surface);
+    color: var(--text-main);
+    font-size: 0.95rem;
+    font-family: inherit;
+    transition: var(--transition-fast);
+}
+
+.floating-search-input:focus {
+    outline: none;
+    border-color: var(--brand-accent);
+    box-shadow: 0 0 0 3px var(--brand-accent-glow);
+}
+
+.floating-search-close-btn {
+    position: absolute;
+    right: 12px;
+    background: transparent;
+    border: none;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+}
+
+.floating-search-results {
+    max-height: 380px;
+    overflow-y: auto;
+    margin-top: 0.6rem;
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 0.5rem;
+}
+
+.search-result-category-title {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--brand-accent);
+    padding: 0.3rem 0.5rem;
+    letter-spacing: 0.5px;
+}
+
+.search-result-item {
+    padding: 0.6rem 0.75rem;
+    border-radius: var(--radius-sm);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.search-result-item:hover {
+    background: var(--bg-card-hover);
+}
+
+.search-result-item strong {
+    font-size: 0.88rem;
+    color: var(--text-main);
+}
+
+.search-result-item small {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Főoldal & Bejelentkező Kártya
+   ========================================================================== */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-view-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+    background: radial-gradient(circle at 50% 30%, rgba(14, 42, 71, 0.08) 0%, transparent 70%);
+}
+
+.auth-card-container {
+    width: 100%;
+    max-width: 440px;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--card-shadow);
+    padding: 2.4rem 2.2rem;
+    position: relative;
+    border: none;
+}
+
+.auth-card-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.auth-card-title {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: var(--text-main);
+    letter-spacing: -0.3px;
+}
+
+.auth-tab-switch {
+    display: flex;
+    background: var(--bg-surface-elevated);
+    border-radius: var(--radius-md);
+    padding: 4px;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color);
+}
+
+.tab-switch-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 0.65rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem;
+    font-weight: 700;
+    font-family: inherit;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.tab-switch-btn.active {
+    background: var(--bg-card);
+    color: var(--brand-primary);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .tab-switch-btn.active {
+    color: var(--brand-accent);
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 0.4rem;
+}
+
+.input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-icon .input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem;
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.input-with-icon input,
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    font-size: 0.92rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-input);
+    color: var(--text-main);
+    transition: var(--transition-fast);
+    font-family: inherit;
+}
+
+.input-with-icon input {
+    padding-left: 2.4rem;
+    padding-right: 2.6rem;
+}
+
+.input-with-icon input:focus,
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--brand-accent);
+    box-shadow: 0 0 0 3px var(--brand-accent-glow);
+    background-color: var(--bg-card);
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color var(--transition-fast);
+}
+
+.password-toggle-btn:hover {
+    color: var(--brand-accent);
+}
+
+.form-hint {
+    display: block;
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+}
+
+.form-extra-links {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -0.5rem;
+    margin-bottom: 1rem;
+}
+
+.checkbox-group {
+    margin: 1rem 0;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.82rem;
+    color: var(--text-main);
+    cursor: pointer;
+    line-height: 1.4;
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin-top: 2px;
+    width: 16px;
+    height: 16px;
+    accent-color: var(--brand-accent);
+    cursor: pointer;
+}
+
+.btn-link {
+    background: none;
+    border: none;
+    color: var(--brand-accent);
+    font-weight: 600;
+    text-decoration: none !important;
+    cursor: pointer;
+    padding: 0;
+    font-size: inherit;
+    font-family: inherit;
+    transition: color var(--transition-fast);
+}
+
+.btn-link:hover {
+    color: var(--brand-accent-hover);
+    text-decoration: none !important;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius-sm);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    font-size: 0.92rem;
+    font-family: inherit;
+}
+
+.btn-block { width: 100%; }
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-light));
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(14, 42, 71, 0.25);
+}
+
+.btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+[data-theme="dark"] .btn-primary {
+    background: linear-gradient(135deg, #18385d, #255285);
+}
+
+.btn-accent {
+    background: linear-gradient(135deg, var(--brand-accent), #c29c29);
+    color: #0e2a47;
+    font-weight: 800;
+    box-shadow: 0 4px 12px var(--brand-accent-glow);
+}
+
+.btn-accent:hover { filter: brightness(1.08); transform: translateY(-1px); }
+
+.btn-secondary {
+    background: var(--bg-surface-elevated);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover { background: var(--bg-card-hover); }
+.btn-sm { padding: 0.4rem 0.75rem; font-size: 0.8rem; }
+
+/* ==========================================================================
+   Szülői Kezelőpult (Dashboard View)
+   ========================================================================== */
+.dashboard-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 1.5rem;
+}
+
+/* 3 Kis Kártya Felül */
+.top-3-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 1.8rem;
+}
+
+.stat-card-mini {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: 1.2rem 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: var(--card-shadow);
+    transition: transform var(--transition-fast);
+    border: none;
+}
+
+.stat-card-mini:hover {
+    transform: translateY(-2px);
+}
+
+.stat-card-mini .stat-icon-wrap {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.stat-carried .stat-icon-wrap {
+    background: rgba(14, 42, 71, 0.1);
+    color: var(--brand-primary);
+}
+
+[data-theme="dark"] .stat-carried .stat-icon-wrap {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.stat-current-otp .stat-icon-wrap {
+    background: rgba(212, 175, 55, 0.18);
+    color: var(--brand-accent);
+}
+
+.stat-monthly-fee .stat-icon-wrap {
+    background: var(--success-bg);
+    color: var(--success-text);
+}
+
+.stat-card-mini .stat-label {
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-card-mini .stat-value {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.2;
+    margin-top: 2px;
+}
+
+/* ==========================================================================
+   Banki Elszámolás Excel Táblázat & Adatvédelem
+   ========================================================================== */
+.bank-sheet-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    box-shadow: var(--card-shadow);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: none;
+}
+
+.bank-sheet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.privacy-notice-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-color);
+    padding: 0.35rem 0.8rem;
+    border-radius: var(--radius-full);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.privacy-notice-badge.admin-notice {
+    border-color: var(--brand-accent);
+    color: var(--brand-accent);
+    background: var(--brand-accent-glow);
+}
+
+.mobile-table-hint {
+    display: none;
+}
+
+.bank-table-scroll-wrapper {
+    overflow-x: auto;
+    border-radius: var(--radius-sm);
+    -webkit-overflow-scrolling: touch;
+}
+
+.bank-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.84rem;
+    white-space: nowrap;
+}
+
+.bank-data-table th {
+    background: var(--bg-surface-elevated);
+    padding: 0.75rem 0.65rem;
+    font-weight: 700;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border-bottom: 2px solid var(--border-color);
+    text-align: right;
+}
+
+.bank-data-table th.col-name,
+.bank-data-table th.col-num {
+    text-align: left;
+}
+
+.bank-data-table td {
+    padding: 0.65rem 0.65rem;
+    border-bottom: 1px solid var(--border-subtle);
+    text-align: right;
+    font-family: inherit;
+}
+
+.bank-data-table td.col-name,
+.bank-data-table td.col-num {
+    text-align: left;
+}
+
+.bank-data-table tbody tr:hover {
+    background-color: var(--bg-card-hover);
+}
+
+.bank-data-table tr.my-child-row {
+    background-color: rgba(212, 175, 55, 0.08);
+}
+
+.student-name-blurred {
+    filter: blur(5.5px);
+    user-select: none;
+    -webkit-user-select: none;
+    opacity: 0.7;
+    display: inline-block;
+    cursor: help;
+    transition: filter 0.3s ease;
+}
+
+.student-name-active {
+    font-weight: 800;
+    color: var(--brand-accent);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.my-child-pill {
+    background: var(--brand-accent);
+    color: #0e2a47;
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 1px 6px;
+    border-radius: var(--radius-sm);
+}
+
+.bank-table-summary-row {
+    background: var(--bg-surface-elevated);
+    font-weight: 800;
+    border-top: 2px solid var(--border-color);
+}
+
+.bank-table-summary-row td {
+    color: var(--text-main);
+}
+
+.bank-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--border-subtle);
+}
+
+.bank-summary-box {
+    background: var(--bg-surface-elevated);
+    padding: 1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+}
+
+.bank-summary-box strong {
+    color: var(--text-main);
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+.bank-summary-box .val {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--brand-accent);
+}
+
+/* ==========================================================================
+   Közös Szekció Fejlécek (Spacious Section Headers)
+   ========================================================================== */
+.section-title-row {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: 1.6rem 2.2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    border: none;
+}
+
+.section-title-row h3 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--text-main);
+    letter-spacing: -0.3px;
+    margin-bottom: 0.35rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.section-title-row p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+    margin: 0;
+}
+
+/* ==========================================================================
+   Hírek Kártyák Teljes Képekkel (News Cards with Full Natural Images)
+   ========================================================================== */
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 2.2rem;
+    margin-bottom: 2rem;
+}
+
+.news-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    border: none;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.news-card:hover { 
+    transform: translateY(-3px); 
+}
+
+.news-image-wrap {
+    margin: -2rem -2rem 1.5rem -2rem;
+    border-top-left-radius: var(--radius-md);
+    border-top-right-radius: var(--radius-md);
+    overflow: hidden;
+    background: #0f172a;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 220px;
+    max-height: 520px;
+    position: relative;
+}
+
+.news-card-img {
+    width: 100%;
+    height: auto;
+    max-height: 520px;
+    object-fit: contain;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.news-image-wrap:hover .news-card-img {
+    transform: scale(1.02);
+}
+
+.pin-ribbon {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    background: var(--brand-accent);
+    color: #0e2a47;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    z-index: 10;
+}
+
+.news-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.9rem;
+}
+
+.news-date { 
+    font-size: 0.82rem; 
+    color: var(--text-muted); 
+    font-weight: 600;
+}
+
+.news-title { 
+    font-size: 1.25rem; 
+    font-weight: 800; 
+    color: var(--text-main); 
+    margin-bottom: 0.9rem; 
+    line-height: 1.35; 
+}
+
+.news-content { 
+    flex: 1; 
+    font-size: 0.92rem; 
+    color: var(--text-muted); 
+    line-height: 1.7; 
+    margin-bottom: 1.3rem; 
+    white-space: pre-line; 
+}
+
+.news-card-footer { 
+    padding-top: 1rem; 
+    border-top: 1px solid var(--border-subtle); 
+    font-size: 0.82rem; 
+    color: var(--text-muted); 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* ==========================================================================
+   SZMK & Infó Szekciók (Profilképekkel és Szellős Elrendezéssel)
+   ========================================================================== */
+.szmk-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 2.2rem;
+    margin-bottom: 2.2rem;
+}
+
+.szmk-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: 2.2rem;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    gap: 1.8rem;
+    align-items: flex-start;
+    border: none;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.szmk-card:hover { 
+    transform: translateY(-3px); 
+}
+
+.szmk-avatar-wrap {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+    overflow: hidden;
+}
+
+.szmk-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+
+.szmk-avatar-icon { 
+    font-size: 2.2rem; 
+    color: #ffffff;
+}
+
+.szmk-info { 
+    flex: 1; 
+    min-width: 0;
+}
+
+.szmk-name { 
+    font-size: 1.3rem; 
+    font-weight: 800; 
+    color: var(--text-main); 
+    line-height: 1.25; 
+    margin-bottom: 0.35rem; 
+}
+
+.szmk-role-badge { 
+    display: inline-block; 
+    background: var(--brand-accent-glow); 
+    color: var(--brand-accent); 
+    padding: 0.25rem 0.75rem; 
+    border-radius: var(--radius-full); 
+    font-size: 0.78rem; 
+    font-weight: 700; 
+    margin-bottom: 0.9rem; 
+    border: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+.szmk-desc { 
+    font-size: 0.92rem; 
+    color: var(--text-muted); 
+    margin-bottom: 1.1rem; 
+    line-height: 1.6; 
+}
+
+.szmk-section-title-row,
+.news-section-title-row {
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+.szmk-title-wrapper,
+.news-title-wrapper {
+    width: 100%;
+    text-align: center;
+}
+
+.szmk-centered-title,
+.news-centered-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--text-main);
+    text-align: center !important;
+    justify-content: center !important;
+    width: 100%;
+    margin: 0;
+}
+
+.szmk-contacts-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+    padding: 0.85rem 1.1rem;
+    background: var(--bg-surface-elevated);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-subtle);
+    text-align: center;
+}
+
+.szmk-contact-item { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    gap: 0.65rem; 
+    font-size: 0.9rem; 
+    color: var(--text-muted); 
+    text-align: center;
+    width: 100%;
+}
+
+.szmk-contact-item .contact-icon {
+    font-size: 1.05rem;
+}
+
+.szmk-contact-item a { 
+    color: var(--text-main); 
+    text-decoration: none; 
+    font-weight: 600; 
+    transition: color var(--transition-fast);
+}
+
+.szmk-contact-item a:hover {
+    color: var(--brand-accent);
+    text-decoration: underline;
+}
+
+.szmk-action-buttons { 
+    display: flex; 
+    gap: 0.75rem; 
+    flex-wrap: wrap; 
+    margin-top: 0.6rem; 
+}
+
+.btn-social {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.65rem 1.1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: #ffffff !important;
+    transition: var(--transition-fast);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.18);
+}
+
+.btn-social:hover { filter: brightness(1.12); transform: translateY(-1px); }
+.btn-facebook { background-color: var(--fb-color); }
+.btn-messenger { background: var(--msg-gradient); }
+
+.szmk-note-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    box-shadow: var(--card-shadow);
+    padding: 1.4rem 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    font-size: 0.92rem;
+    color: var(--text-muted);
+    border: none;
+    line-height: 1.55;
+}
+
+.szmk-note-card .note-icon { font-size: 1.8rem; flex-shrink: 0; }
+.szmk-note-card strong { color: var(--text-main); }
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.info-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    box-shadow: var(--card-shadow);
+    border: none;
+}
+
+.info-card h3,
+.info-card-single-line-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin-bottom: 1.2rem;
+    color: var(--text-main);
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 0.75rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.info-list { list-style: none; font-size: 0.92rem; }
+.info-list li { padding: 0.6rem 0; border-bottom: 1px dashed var(--border-subtle); line-height: 1.5; }
+.info-list li:last-child { border-bottom: none; }
+
+.bank-acc-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.75rem 0 !important;
+}
+
+.bank-acc-details-row {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+    margin-top: 0.2rem;
+}
+
+.bank-acc-code {
+    font-size: 1rem;
+    font-weight: 800;
+    padding: 0.35rem 0.7rem;
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--brand-accent);
+    letter-spacing: 0.6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+.btn-copy-acc {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    transition: var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.btn-copy-acc:hover {
+    border-color: var(--brand-accent);
+    color: var(--brand-accent);
+    transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   Főoldal: 11. D Osztály Névsor & Tanáraink
+   ========================================================================== */
+.home-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2.2rem;
+    margin-bottom: 2rem;
+}
+
+.home-hero-header-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: 2.2rem 2.5rem;
+    box-shadow: var(--card-shadow);
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.school-main-title {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: var(--text-main);
+    letter-spacing: -0.3px;
+    line-height: 1.3;
+    margin-bottom: 0.65rem;
+}
+
+.class-main-subtitle {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.85rem;
+}
+
+.class-main-subtitle .class-badge {
+    background: var(--brand-accent);
+    color: #0e2a47;
+    font-size: 0.82rem;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+}
+
+.class-main-subtitle .spec-badge {
+    background: var(--bg-surface-elevated);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+}
+
+.class-main-subtitle .year-badge {
+    background: rgba(212, 175, 55, 0.12);
+    color: var(--brand-accent);
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+}
+
+.home-hero-desc {
+    font-size: 0.94rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+    margin: 0;
+}
+
+.home-card-block {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: 2.2rem;
+    box-shadow: var(--card-shadow);
+    border: none;
+}
+
+.home-card-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.8rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.home-card-header-flex h3 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.home-card-header-flex h3.roster-title-block,
+.roster-title-block {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.25rem !important;
+}
+
+.student-count-sub {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--brand-accent);
+}
+
+.roster-search-input {
+    padding: 0.6rem 1rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-color);
+    background: var(--bg-surface-elevated);
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 0.85rem;
+    width: 260px;
+    transition: var(--transition-fast);
+}
+
+.roster-search-input:focus {
+    outline: none;
+    border-color: var(--brand-accent);
+    box-shadow: 0 0 0 3px var(--brand-accent-glow);
+}
+
+.students-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+}
+
+.student-roster-card {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.student-roster-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--brand-accent);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+}
+
+.student-roster-card.my-child-highlight {
+    background: rgba(212, 175, 55, 0.1);
+    border-color: var(--brand-accent);
+    box-shadow: 0 0 0 1px var(--brand-accent);
+}
+
+.student-num-badge {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-light));
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 0.82rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.my-child-highlight .student-num-badge {
+    background: var(--brand-accent);
+    color: #0e2a47;
+}
+
+.student-card-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.student-card-name {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.student-card-sub {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.teachers-notice-banner {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.92rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.teachers-notice-banner .banner-icon {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+}
+
+.teachers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.teacher-card {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 1.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: transform var(--transition-fast);
+}
+
+.teacher-card:hover {
+    transform: translateY(-2px);
+}
+
+.teacher-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.teacher-avatar-box {
+    width: 54px;
+    height: 54px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    color: #ffffff;
+    flex-shrink: 0;
+}
+
+.teacher-status-pill {
+    background: rgba(212, 175, 55, 0.12);
+    color: var(--brand-accent);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+.head-teacher-card {
+    border-color: rgba(212, 175, 55, 0.45);
+    background: rgba(212, 175, 55, 0.04);
+}
+
+.head-teacher-pill {
+    background: rgba(212, 175, 55, 0.22) !important;
+    color: var(--brand-accent) !important;
+    border-color: rgba(212, 175, 55, 0.45) !important;
+    font-weight: 800 !important;
+}
+
+.teacher-name {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.25;
+}
+
+.teacher-role {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--brand-accent);
+}
+
+.teacher-subject {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   Admin Kezelőpult
+   ========================================================================== */
+.admin-dashboard {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0.5rem 0;
+}
+
+.admin-header-bar {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+    box-shadow: var(--card-shadow);
+    border: none;
+}
+
+.admin-badge { display: flex; align-items: center; gap: 1rem; }
+.admin-badge .icon { font-size: 2rem; }
+.admin-badge h2 { font-size: 1.25rem; font-weight: 800; }
+.admin-badge p { font-size: 0.85rem; color: var(--text-muted); }
+.admin-header-actions { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.admin-nav-tabs { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+
+.admin-tab-btn {
+    padding: 0.65rem 1.25rem;
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    color: var(--text-main);
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    box-shadow: var(--card-shadow);
+    border: none;
+    transition: var(--transition-fast);
+}
+
+.admin-tab-btn.active { background: var(--brand-primary); color: #ffffff; }
+
+.admin-section-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+    .admin-section-grid { grid-template-columns: 1fr; }
+}
+
+.admin-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow);
+    border: none;
+}
+
+.card-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.limit-indicator { display: flex; align-items: center; gap: 0.6rem; }
+.limit-bar { width: 60px; height: 8px; background: var(--bg-surface-elevated); border-radius: var(--radius-full); overflow: hidden; border: 1px solid var(--border-color); }
+.limit-fill { height: 100%; background: var(--brand-accent); border-radius: var(--radius-full); }
+.parent-pill { display: inline-flex; align-items: center; gap: 0.4rem; background: var(--bg-surface-elevated); border: 1px solid var(--border-color); padding: 2px 8px; border-radius: var(--radius-full); font-size: 0.78rem; margin-right: 4px; margin-bottom: 4px; }
+.btn-tiny-del { background: none; border: none; color: var(--danger-text); font-weight: bold; cursor: pointer; font-size: 0.8rem; }
+
+/* ==========================================================================
+   Modálok & Animációk
+   ========================================================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(8, 14, 23, 0.78);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.modal-overlay.active { display: flex; animation: fadeIn 0.2s ease forwards; }
+
+.modal-container {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--modal-shadow);
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    border: none;
+}
+
+.modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+.modal-header h3 { font-size: 1.15rem; font-weight: 800; }
+.modal-close-btn { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--text-muted); }
+.modal-body { padding: 1.5rem; font-size: 0.92rem; line-height: 1.6; }
+.modal-footer { padding: 1.1rem 1.5rem; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 0.75rem; background: var(--bg-surface-elevated); border-bottom-left-radius: var(--radius-lg); border-bottom-right-radius: var(--radius-lg); }
+
+.limit-alert-card { text-align: center; padding: 0.5rem 0; }
+.limit-alert-icon { width: 68px; height: 68px; background: var(--warning-bg); color: var(--warning-text); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 2rem; margin-bottom: 1rem; box-shadow: 0 0 0 8px rgba(217, 119, 6, 0.1); }
+.limit-student-highlight { color: var(--brand-accent); font-weight: 700; }
+.limit-info-box { background: var(--bg-surface-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; margin-top: 1.2rem; text-align: left; font-size: 0.85rem; }
+.demo-code-box { background: var(--bg-surface-elevated); border: 1px dashed var(--brand-accent); border-radius: var(--radius-sm); padding: 0.75rem; text-align: center; font-size: 0.85rem; margin: 1rem 0; }
+.demo-code-box code { font-size: 1.2rem; font-weight: 800; color: var(--brand-accent); letter-spacing: 2px; }
+
+.toast-popup {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #0e2a47;
+    color: #ffffff;
+    padding: 0.85rem 1.4rem;
+    border-radius: var(--radius-md);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    border: 1px solid var(--brand-accent);
+    font-size: 0.9rem;
+    font-weight: 700;
+    z-index: 2000;
+    display: none;
+    animation: slideInRight 0.3s ease;
+}
+
+.toast-popup.show { display: block; }
+.toast-popup.error { border-color: var(--danger-text); background: #2b1111; }
+.toast-popup.success { border-color: var(--success-text); }
+.hidden { display: none !important; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes slideDown { from { transform: translateY(-15px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }

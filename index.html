@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="hu" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Széchenyi István Technikum - 11. D Osztálypénz és Szülői Portál</title>
+    <meta name="description" content="A Nyíregyházi SZC Széchenyi István Technikum és Kollégium 11. D osztályának hivatalos szülői portálja. 2. tanév Banki elszámolás, hírek és SZMK kapcsolat.">
+    
+    <!-- Favicon & Apple Touch Icon -->
+    <link rel="icon" type="image/png" href="public/icon.png">
+    <link rel="apple-touch-icon" href="public/icon.png">
+
+    <!-- Open Graph & Social Media Megosztás -->
+    <meta property="og:title" content="Széchenyi István Technikum - 11. D Osztálypénz és Szülői Portál">
+    <meta property="og:description" content="Nyíregyházi SZC Széchenyi István Technikum és Kollégium 11. D osztály hivatalos szülői portálja. Osztálypénz elszámolás, hírek, SZMK kapcsolat.">
+    <meta property="og:image" content="public/share.png">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="hu_HU">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Széchenyi István Technikum - 11. D Osztálypénz és Szülői Portál">
+    <meta name="twitter:description" content="Nyíregyházi SZC Széchenyi István Technikum és Kollégium 11. D osztály hivatalos szülői portálja.">
+    <meta name="twitter:image" content="public/share.png">
+    
+    <!-- Google Fonts: Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Stíluslapok -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- ==========================================================================
+             Fejléc (Navbar)
+             ========================================================================== -->
+        <header class="site-header">
+            <div class="header-inner">
+                <div class="school-brand" onclick="window.app.navigateToHome(event)" role="button" tabindex="0" title="Ugrás a Főoldal tetejére">
+                    <img src="public/logo.png" 
+                         alt="Széchenyi István Technikum Logó" 
+                         class="header-logo">
+                    <div class="brand-titles desktop-brand-titles">
+                        <h1 class="header-school-name">Nyíregyházi SZC Széchenyi István Technikum és Kollégium</h1>
+                        <span class="class-subtitle">🎓 11. D osztály • Informatika és távközlés ágazat • 2025/2026. tanév</span>
+                    </div>
+                </div>
+
+                <div class="header-actions">
+                    <!-- Kereső Ikon Gomb a Headerben -->
+                    <button class="header-search-btn" id="header-search-btn" onclick="window.app.toggleFloatingSearch()" aria-label="Keresés a tartalomban" title="Keresés a portálon">
+                        <span class="action-icon">🔍</span>
+                        <span class="action-text">Keresés</span>
+                    </button>
+
+                    <!-- Téma Kapcsoló (Nappali / Éjjeli) -->
+                    <button class="theme-toggle-btn" id="theme-toggle-btn" onclick="window.app.toggleTheme()" aria-label="Téma váltása" title="Világos / Sötét mód">
+                        <span id="theme-toggle-icon">☀️</span>
+                        <span id="theme-toggle-text" class="action-text">Világos mód</span>
+                    </button>
+
+                    <!-- Bejelentkezett felhasználó adatai (Desktop) -->
+                    <div id="header-user-info" class="desktop-user-info"></div>
+
+                    <!-- Kijelentkezés gomb (Desktop) -->
+                    <div id="main-header-actions" class="hidden desktop-logout-action">
+                        <button class="btn btn-sm btn-secondary" onclick="window.authManager.logout()">
+                            🚪 <span class="action-text">Kijelentkezés</span>
+                        </button>
+                    </div>
+
+                    <!-- Animált Hamburger Menü Gomb (Mobil & Tablet) -->
+                    <button class="mobile-hamburger-btn hidden" id="mobile-hamburger-btn" onclick="window.app.toggleMobileMenu()" aria-label="Mobil Menü Megnyitása" title="Menü">
+                        <span class="hamburger-box">
+                            <span class="hamburger-inner"></span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- ==========================================================================
+             Animált Mobil Navigációs Drawer (Slide-in Menü)
+             ========================================================================== -->
+        <div id="mobile-nav-backdrop" class="mobile-nav-backdrop" onclick="window.app.closeMobileMenu()"></div>
+        <aside id="mobile-nav-drawer" class="mobile-nav-drawer">
+            <div class="mobile-drawer-header">
+                <div class="mobile-drawer-brand">
+                    <img src="public/logo.png" alt="Logó" class="mobile-drawer-logo">
+                    <div>
+                        <strong>11. D Portál</strong>
+                        <small class="d-block text-muted">Gyorsmenü</small>
+                    </div>
+                </div>
+                <button class="mobile-drawer-close-btn" onclick="window.app.closeMobileMenu()" aria-label="Menü bezárása">✕</button>
+            </div>
+
+            <!-- Mobil Profil Kártya -->
+            <div id="mobile-user-profile-badge" class="mobile-user-profile-badge"></div>
+
+            <!-- Mobil Menüpontok -->
+            <nav class="mobile-nav-list" id="mobile-tab-nav"></nav>
+
+            <!-- Mobil Drawer Alsó Sáv -->
+            <div class="mobile-drawer-footer">
+                <button class="btn btn-block btn-secondary" onclick="window.authManager.logout(); window.app.closeMobileMenu();">
+                    🚪 Kijelentkezés a fiókból
+                </button>
+            </div>
+        </aside>
+
+        <!-- ==========================================================================
+             Fejléc Alatti Középre Zárt Menüsor (Nav Bar)
+             ========================================================================== -->
+        <div id="sub-header-nav-container" class="sub-header-nav-container hidden animate-fade-in">
+            <div class="sub-header-nav-inner">
+                <nav class="centered-tab-nav" id="main-tab-nav"></nav>
+            </div>
+        </div>
+
+        <!-- ==========================================================================
+             Lebegő Intelligens Keresősáv & Eredmények Ablak
+             ========================================================================== -->
+        <div id="floating-search-overlay" class="floating-search-overlay">
+            <div class="floating-search-container">
+                <div class="floating-search-input-wrap">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="floating-search-input" class="floating-search-input" placeholder="Keresés a banki elszámolásban, hírekben, SZMK infókban..." autocomplete="off">
+                    <button type="button" class="floating-search-close-btn" onclick="window.app.closeFloatingSearch()" title="Kereső bezárása (Esc)">✕</button>
+                </div>
+                <div id="floating-search-results" class="floating-search-results">
+                    <p class="text-muted text-center" style="padding: 1rem 0; font-size: 0.85rem;">Írjon be legalább 2 betűt a kereséshez...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================================================
+             Fő Tartalomterület
+             ========================================================================== -->
+        <main class="main-content">
+            
+            <!-- 1. NÉZET: Bejelentkezési és Regisztrációs Kártya (Középen, csak "Szülői portál") -->
+            <section id="auth-view-container" class="auth-view-wrapper">
+                <div class="auth-card-container animate-fade-in">
+                    
+                    <div class="auth-card-header">
+                        <h2 class="auth-card-title">Szülői portál</h2>
+                    </div>
+
+                    <!-- Fülváltó (Bejelentkezés / Regisztráció) -->
+                    <div class="auth-tab-switch">
+                        <button type="button" id="auth-tab-login" class="tab-switch-btn active">🔑 Bejelentkezés</button>
+                        <button type="button" id="auth-tab-register" class="tab-switch-btn">📝 Regisztráció</button>
+                    </div>
+
+                    <!-- BEJELENTKEZÉSI ŰRLAP -->
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="login-email">E-mail cím</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">📧</span>
+                                <input type="email" id="login-email" placeholder="pelda@szulo.hu" required autocomplete="email">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="login-password">Jelszó</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">🔒</span>
+                                <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+                                <button type="button" class="password-toggle-btn" onclick="window.app.togglePasswordVisibility('login-password', this)" title="Jelszó mutatása/elrejtése">
+                                    👁️
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-extra-links">
+                            <button type="button" class="btn-link" style="font-size: 0.8rem;" onclick="window.authManager.openForgotPasswordModal()">Elfelejtett jelszó?</button>
+                        </div>
+
+                        <!-- Adatkezelési hozzájárulás -->
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="login-privacy-consent" checked required>
+                                <span>Elfogadom az <button type="button" class="btn-link" onclick="window.authManager.openPrivacyModal()">Adatkezelési tájékoztatót</button></span>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">
+                            Belépés a Portálra
+                        </button>
+                    </form>
+
+                    <!-- REGISZTRÁCIÓS ŰRLAP -->
+                    <form id="register-form" class="hidden">
+                        <div class="form-group">
+                            <label for="reg-email">E-mail cím *</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">📧</span>
+                                <input type="email" id="reg-email" placeholder="pelda@szulo.hu" required autocomplete="email">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reg-child-select">Gyermek neve (11. D tanuló) *</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">🎓</span>
+                                <select id="reg-child-select" required>
+                                    <option value="" disabled selected>-- Válassza ki a tanulót a 37 fős listából --</option>
+                                </select>
+                            </div>
+                            <small class="form-hint">ℹ️ Egy tanulóhoz maximum 2 szülői fiók regisztrálható.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reg-password">Jelszó *</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">🔒</span>
+                                <input type="password" id="reg-password" placeholder="Legalább 6 karakter" required autocomplete="new-password">
+                                <button type="button" class="password-toggle-btn" onclick="window.app.togglePasswordVisibility('reg-password', this)" title="Jelszó mutatása/elrejtése">
+                                    👁️
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reg-password-confirm">Jelszó megerősítése *</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">🔒</span>
+                                <input type="password" id="reg-password-confirm" placeholder="Jelszó újra" required autocomplete="new-password">
+                                <button type="button" class="password-toggle-btn" onclick="window.app.togglePasswordVisibility('reg-password-confirm', this)" title="Jelszó mutatása/elrejtése">
+                                    👁️
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Adatkezelési hozzájárulás -->
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="reg-privacy-consent" required>
+                                <span>Elolvastam és elfogadom az <button type="button" class="btn-link" onclick="window.authManager.openPrivacyModal()">Adatkezelési tájékoztatót</button> és hozzájárulok adataim kezeléséhez. *</span>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-accent btn-block">
+                            ✨ Fiók Regisztrálása
+                        </button>
+                    </form>
+
+                </div>
+            </section>
+
+            <!-- 2. NÉZET: Szülői & Admin Kezelőpult (Belépés után) -->
+            <section id="parent-dashboard-view" class="dashboard-wrapper hidden animate-fade-in">
+                
+                <!-- 3 KIS KÁRTYA FELÜL -->
+                <div class="top-3-stats-grid">
+                    <div class="stat-card-mini stat-carried">
+                        <div class="stat-icon-wrap">📂</div>
+                        <div class="stat-info">
+                            <div class="stat-label">Előző évről áthozott összeg</div>
+                            <div class="stat-value" id="stat-brought-forward">627 081 Ft</div>
+                        </div>
+                    </div>
+                    <div class="stat-card-mini stat-current-otp">
+                        <div class="stat-icon-wrap">🏦</div>
+                        <div class="stat-info">
+                            <div class="stat-label">Aktuális OTP számla egyenleg</div>
+                            <div class="stat-value" id="stat-current-balance">1 247 421 Ft</div>
+                        </div>
+                    </div>
+                    <div class="stat-card-mini stat-monthly-fee">
+                        <div class="stat-icon-wrap">💳</div>
+                        <div class="stat-info">
+                            <div class="stat-label">Havi osztálypénz</div>
+                            <div class="stat-value" id="stat-monthly-fee">3 000 Ft</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dinamikusan renderelt fül tartalom (Banki elszámolás / Hírek / SZMK / Info / Admin) -->
+                <div id="dashboard-tab-content"></div>
+
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ==========================================================================
+         MODÁLOK
+         ========================================================================== -->
+
+    <!-- 1. Elegáns Tanuló Limit Figyelmeztető Modal (Max 2 szülő/tanuló) -->
+    <div id="child-limit-modal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>⚠️ Regisztrációs korlátozás</h3>
+                <button class="modal-close-btn" onclick="window.authManager.closeChildLimitModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="limit-alert-card">
+                    <div class="limit-alert-icon">👨‍👩‍👦</div>
+                    <h4>Egy tanulóhoz maximum 2 regisztráció tartozhat!</h4>
+                    <p style="margin-top: 0.75rem;">
+                        A kiválasztott diákhoz (<span id="limit-modal-student-name" class="limit-student-highlight">Tanuló</span>) már rögzítésre került a megengedett <strong>2 szülői felhasználói fiók</strong>.
+                    </p>
+                </div>
+                <div class="limit-info-box">
+                    <strong>Mit tehet most?</strong>
+                    <ul style="margin-left: 1.2rem; margin-top: 0.4rem;">
+                        <li>Kérjük, egyeztessen a már regisztrált családtaggal a belépési adatokról.</li>
+                        <li>Ha elfelejtette korábbi jelszavát vagy módosítani szeretné a regisztrált e-mail címet, kérjük vegye fel a kapcsolatot az adminisztrátorral: <a href="mailto:rekalaca@gmail.com"><strong>rekalaca@gmail.com</strong></a> (Rékási László).</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="window.authManager.closeChildLimitModal()">Értem, rendben</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. E-mail megerősítő kód Modal -->
+    <div id="email-verify-modal" class="modal-overlay">
+        <div class="modal-container" style="max-width: 440px;">
+            <div class="modal-header">
+                <h3>📧 E-mail cím megerősítése</h3>
+                <button class="modal-close-btn" onclick="window.authManager.closeEmailVerifyModal()">✕</button>
+            </div>
+            <form id="email-verify-form">
+                <div class="modal-body">
+                    <p style="font-size: 0.88rem; margin-bottom: 0.75rem;">
+                        Megerősítő kódot küldtünk a következő címre: <strong id="verify-modal-email">pelda@szulo.hu</strong>
+                    </p>
+                    <p style="font-size: 0.82rem; color: var(--text-muted);">
+                        Kérjük írja be az e-mailben kapott 6 számjegyű kódot a regisztráció véglegesítéséhez.
+                    </p>
+                    
+                    <div class="demo-code-box">
+                        <small style="color: var(--text-muted); display: block; margin-bottom: 4px;">Demó környezetben az elküldött kód:</small>
+                        <code id="demo-verification-code">123456</code>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label for="verify-code-input">6 számjegyű megerősítő kód</label>
+                        <input type="text" id="verify-code-input" placeholder="123456" maxlength="6" required style="text-align: center; font-size: 1.3rem; letter-spacing: 4px; font-weight: 800;">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="window.authManager.closeEmailVerifyModal()">Mégse</button>
+                    <button type="submit" class="btn btn-primary">Megerősítés & Belépés</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3. Elfelejtett jelszó Modal -->
+    <div id="forgot-password-modal" class="modal-overlay">
+        <div class="modal-container" style="max-width: 440px;">
+            <div class="modal-header">
+                <h3>🔑 Jelszó visszaállítása</h3>
+                <button class="modal-close-btn" onclick="window.authManager.closeForgotPasswordModal()">✕</button>
+            </div>
+            
+            <!-- 1. lépés: E-mail megadása -->
+            <div id="forgot-step-1">
+                <form id="forgot-step1-form">
+                    <div class="modal-body">
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+                            Adja meg a regisztrációkor használt e-mail címét, és küldünk egy visszaállító kódot.
+                        </p>
+                        <div class="form-group">
+                            <label for="forgot-email-input">Regisztrált e-mail cím</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">📧</span>
+                                <input type="email" id="forgot-email-input" placeholder="pelda@szulo.hu" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="window.authManager.closeForgotPasswordModal()">Mégse</button>
+                        <button type="submit" class="btn btn-primary">Kód küldése</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 2. lépés: Kód és új jelszó megadása -->
+            <div id="forgot-step-2" class="hidden">
+                <form id="forgot-step2-form">
+                    <div class="modal-body">
+                        <div class="demo-code-box">
+                            <small style="color: var(--text-muted); display: block;">Demó visszaállító kód:</small>
+                            <code id="demo-reset-code">654321</code>
+                        </div>
+                        <div class="form-group">
+                            <label for="forgot-code-input">Visszaállító kód</label>
+                            <input type="text" id="forgot-code-input" placeholder="123456" maxlength="6" required style="text-align: center; font-size: 1.1rem; letter-spacing: 2px;">
+                        </div>
+                        <div class="form-group">
+                            <label for="forgot-newpass-input">Új jelszó</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">🔒</span>
+                                <input type="password" id="forgot-newpass-input" placeholder="Legalább 6 karakter" required>
+                                <button type="button" class="password-toggle-btn" onclick="window.app.togglePasswordVisibility('forgot-newpass-input', this)" title="Jelszó mutatása/elrejtése">
+                                    👁️
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="forgot-newpass-conf-input">Új jelszó megerősítése</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">🔒</span>
+                                <input type="password" id="forgot-newpass-conf-input" placeholder="Új jelszó újra" required>
+                                <button type="button" class="password-toggle-btn" onclick="window.app.togglePasswordVisibility('forgot-newpass-conf-input', this)" title="Jelszó mutatása/elrejtése">
+                                    👁️
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Jelszó mentése</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Adatkezelési Tájékoztató Modal (GDPR) -->
+    <div id="privacy-policy-modal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>📜 Adatkezelési Tájékoztató</h3>
+                <button class="modal-close-btn" onclick="window.authManager.closePrivacyModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <h4>Adatkezelési Tájékoztató és Hozzájárulás</h4>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Hatályos: 2026. szeptember 1-től</p>
+                
+                <p><strong>1. Adatkezelő adatai:</strong></p>
+                <p>Név: <strong>Rékási László</strong><br>
+                   E-mail: <a href="mailto:rekalaca@gmail.com">rekalaca@gmail.com</a><br>
+                   Szervezet: Nyíregyházi SZC Széchenyi István Technikum és Kollégium 11. D osztály Szülői Munkaközösség</p>
+                <br>
+                <p><strong>2. Kezelt személyes adatok köre:</strong></p>
+                <ul>
+                    <li>Szülő/gondviselő e-mail címe és jelszava (kódolva tárolva),</li>
+                    <li>Gyermek neve (a 11. D osztály 37 fős névsorából),</li>
+                    <li>Osztálypénz befizetési státuszok és naplózási időpontok.</li>
+                </ul>
+                <br>
+                <p><strong>3. Az adatkezelés célja és jogalapja:</strong></p>
+                <p>Az adatkezelés célja a 11. D osztály szülői kapcsolattartásának elősegítése, valamint az osztálypénz átlátható elszámolása és kezelése. Jogalap: a GDPR 6. cikk (1) bekezdés a) pontja szerinti önkéntes szülői hozzájárulás.</p>
+                <br>
+                <p><strong>4. Tanulónkénti regisztrációs limit:</strong></p>
+                <p>Az adatbiztonság és a visszaélések megelőzése érdekében tanulónként legfeljebb 2 szülői/gondviselői fiók regisztrálható a rendszerben.</p>
+                <br>
+                <p><strong>5. Adatbiztonság és tárolás időtartama:</strong></p>
+                <p>Az adatokat kizárólag a tanuló osztályközösségi tagságának végéig, legkésőbb a 2026/2027-es tanév végéig kezeljük, ezt követően törlésre kerülnek.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="window.authManager.closePrivacyModal()">Megértettem és elfogadom</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Értesítési lebegő üzenet (Toast) -->
+    <div id="toast-notification" class="toast-popup"></div>
+
+    <!-- JavaScript Fájlok -->
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
