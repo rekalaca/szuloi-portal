@@ -165,24 +165,28 @@ export default function BankSheetY3Tab({ currentUser }) {
           </div>
 
           <div style={{ display: 'flex', gap: '0.65rem', alignItems: 'center', flexWrap: 'wrap' }}>
-            <button
-              type="button"
-              className="btn btn-sm btn-secondary"
-              onClick={handleExportExcel}
-              title="Táblázat letöltése Excel (.xlsx) fájlként"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '0.45rem 0.85rem' }}
-            >
-              📊 Excel (.xlsx)
-            </button>
-            <button
-              type="button"
-              className="btn btn-sm btn-secondary"
-              onClick={handlePrintPDF}
-              title="Táblázat nyomtatása vagy mentése PDF-ként"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '0.45rem 0.85rem' }}
-            >
-              📄 PDF / Nyomtatás
-            </button>
+            {isAdmin && (
+              <>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-secondary"
+                  onClick={handleExportExcel}
+                  title="Táblázat letöltése Excel (.xlsx) fájlként"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '0.45rem 0.85rem' }}
+                >
+                  📊 Excel (.xlsx)
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-secondary"
+                  onClick={handlePrintPDF}
+                  title="Táblázat nyomtatása vagy mentése PDF-ként"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '0.45rem 0.85rem' }}
+                >
+                  📄 PDF / Nyomtatás
+                </button>
+              </>
+            )}
             <input
               type="text"
               placeholder={isAdmin ? "Szűrés tanuló nevére..." : "Szűrés tanuló sorszámára (#)..."}
