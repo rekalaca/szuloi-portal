@@ -219,9 +219,14 @@ export default function AdminTab({ onNotify }) {
   };
 
   // --- Handlers for Users ---
+  const isFixedAdmin = (email) => {
+    const clean = (email || '').trim().toLowerCase();
+    return clean === 'rekalaca@gmail.com' || clean === 'haritunde11@gmail.com';
+  };
+
   const handleToggleAdminRole = (u) => {
-    if (u.email?.toLowerCase() === 'rekalaca@gmail.com') {
-      onNotify?.('A főadminisztrátori jogosultság védett, nem vonható vissza!');
+    if (isFixedAdmin(u.email)) {
+      onNotify?.('Az állandó SZMK vezetők adminisztrátori jogosultsága nem módosítható!');
       return;
     }
 
@@ -267,8 +272,8 @@ export default function AdminTab({ onNotify }) {
   };
 
   const handleDeleteUser = (u) => {
-    if (u.email?.toLowerCase() === 'rekalaca@gmail.com') {
-      onNotify?.('A főadminisztrátori fiók szent és sérthetetlen, nem törölhető!');
+    if (isFixedAdmin(u.email)) {
+      onNotify?.('Az állandó SZMK vezetői fiókok nem törölhetők!');
       return;
     }
 
@@ -755,9 +760,9 @@ export default function AdminTab({ onNotify }) {
                         ) : '—'}
                       </td>
                       <td>
-                        {u.email?.toLowerCase() === 'rekalaca@gmail.com' ? (
+                        {isFixedAdmin(u.email) ? (
                           <span className="badge badge-warning" style={{ background: 'linear-gradient(135deg, #d4af37, #f39c12)', color: '#000', fontWeight: 800, border: 'none' }}>
-                            🛡️ Főadminisztrátor
+                            👑 SZMK Vezető (Admin)
                           </span>
                         ) : (
                           <span className={`badge ${u.role === 'admin' ? 'badge-warning' : 'badge-primary'}`}>
@@ -769,10 +774,8 @@ export default function AdminTab({ onNotify }) {
                         <span className="badge badge-success">✓ Megerősítve</span>
                       </td>
                       <td>
-                        {u.email?.toLowerCase() === 'rekalaca@gmail.com' ? (
-                          <span style={{ color: 'var(--brand-accent)', fontWeight: 700, fontSize: '0.8rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                            🔒 Sérthetetlen fiók
-                          </span>
+                        {isFixedAdmin(u.email) ? (
+                          <span style={{ color: 'var(--text-muted)', fontSize: '1rem', fontWeight: 600 }}>—</span>
                         ) : (
                           <div style={{ display: 'flex', gap: '0.45rem', alignItems: 'center', flexWrap: 'wrap' }}>
                             <button
