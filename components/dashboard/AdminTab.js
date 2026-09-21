@@ -219,7 +219,59 @@ export default function AdminTab({ onNotify }) {
   };
 
   // --- Handlers for Users ---
+  const handleToggleAdminRole = (u) => {
+    if (u.email?.toLowerCase() === 'rekalaca@gmail.com') {
+      onNotify?.('A főadminisztrátori jogosultság védett, nem vonható vissza!');
+      return;
+    }
+
+    const isCurrentlyAdmin = u.role === 'admin';
+    const nextRole = isCurrentlyAdmin ? 'parent' : 'admin';
+
+    setConfirmDialog({
+      isOpen: true,
+      title: isCurrentlyAdmin ? 'Adminisztrátori Jog Visszavonása' : 'Adminisztrátori Jog Adása',
+      type: isCurrentlyAdmin ? 'danger' : 'warning',
+      confirmText: isCurrentlyAdmin ? '👤 Visszavonás (Szülővé tétel)' : '👑 Adminná Kinevezés',
+      cancelText: 'Mégse',
+      isAlertOnly: false,
+      message: (
+        <div>
+          <p style={{ marginBottom: '0.85rem', fontSize: '0.95rem' }}>
+            Biztosan módosítani szeretné <strong style={{ color: 'var(--brand-accent)' }}>{u.email}</strong> felhasználó jogosultságát?
+          </p>
+          <div style={{ background: 'var(--bg-input)', padding: '0.85rem 1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', marginBottom: '0.85rem', fontSize: '0.88rem' }}>
+            Jelenlegi szerepkör: <strong>{isCurrentlyAdmin ? '👑 Adminisztrátor' : '👤 Szülő'}</strong> ➔ Új szerepkör: <strong>{nextRole === 'admin' ? '👑 Adminisztrátor' : '👤 Szülő'}</strong>
+          </div>
+          <div style={{ background: isCurrentlyAdmin ? 'rgba(239, 68, 68, 0.1)' : 'rgba(212, 175, 55, 0.1)', border: `1px solid ${isCurrentlyAdmin ? 'rgba(239, 68, 68, 0.25)' : 'rgba(212, 175, 55, 0.3)'}`, padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', color: 'var(--text-main)', fontSize: '0.82rem' }}>
+            {nextRole === 'admin' ? (
+              <span>👑 <strong>Figyelem:</strong> Az új adminisztrátor teljes hozzáférést kap a pénzügyi könyveléshez, hírekhez és felhasználók kezeléséhez.</span>
+            ) : (
+              <span>👤 <strong>Figyelem:</strong> A felhasználó a jövőben kizárólag a saját gyermeke szülői felületét éri el.</span>
+            )}
+          </div>
+        </div>
+      ),
+      onConfirm: async () => {
+        const updated = users.map(user => {
+          if (user.id === u.id || user.email?.toLowerCase() === u.email?.toLowerCase()) {
+            return { ...user, role: nextRole };
+          }
+          return user;
+        });
+        await AppStore.saveUsers(updated);
+        setUsers(AppStore.getUsers());
+        onNotify?.(`Jogosultság módosítva: ${u.email} (${nextRole === 'admin' ? 'Adminisztrátor' : 'Szülő'})`);
+      }
+    });
+  };
+
   const handleDeleteUser = (u) => {
+    if (u.email?.toLowerCase() === 'rekalaca@gmail.com') {
+      onNotify?.('A főadminisztrátori fiók szent és sérthetetlen, nem törölhető!');
+      return;
+    }
+
     setConfirmDialog({
       isOpen: true,
       title: 'Regisztráció / Szülői Fiók Törlése',
@@ -703,23 +755,45 @@ export default function AdminTab({ onNotify }) {
                         ) : '—'}
                       </td>
                       <td>
-                        <span className={`badge ${u.role === 'admin' ? 'badge-warning' : 'badge-primary'}`}>
-                          {u.role === 'admin' ? 'Rendszergazda' : 'Szülő'}
-                        </span>
+                        {u.email?.toLowerCase() === 'rekalaca@gmail.com' ? (
+                          <span className="badge badge-warning" style={{ background: 'linear-gradient(135deg, #d4af37, #f39c12)', color: '#000', fontWeight: 800, border: 'none' }}>
+                            🛡️ Főadminisztrátor
+                          </span>
+                        ) : (
+                          <span className={`badge ${u.role === 'admin' ? 'badge-warning' : 'badge-primary'}`}>
+                            {u.role === 'admin' ? '👑 Adminisztrátor' : '👤 Szülő'}
+                          </span>
+                        )}
                       </td>
                       <td>
                         <span className="badge badge-success">✓ Megerősítve</span>
                       </td>
                       <td>
-                        {u.role !== 'admin' && (
-                          <button
-                            type="button"
-                            className="btn btn-sm btn-danger"
-                            onClick={() => handleDeleteUser(u)}
-                            title="Fiók törlése"
-                          >
-                            🗑️ Törlés
-                          </button>
+                        {u.email?.toLowerCase() === 'rekalaca@gmail.com' ? (
+                          <span style={{ color: 'var(--brand-accent)', fontWeight: 700, fontSize: '0.8rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                            🔒 Sérthetetlen fiók
+                          </span>
+                        ) : (
+                          <div style={{ display: 'flex', gap: '0.45rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                            <button
+                              type="button"
+                              className={`btn btn-sm ${u.role === 'admin' ? 'btn-secondary' : 'btn-primary'}`}
+                              onClick={() => handleToggleAdminRole(u)}
+                              title={u.role === 'admin' ? 'Admin jog megvonása (szülővé tétel)' : 'Adminisztrátori jog adása'}
+                              style={{ padding: '0.32rem 0.65rem', fontSize: '0.78rem' }}
+                            >
+                              {u.role === 'admin' ? '👤 Szülővé tétel' : '👑 Legyen Admin'}
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-danger"
+                              onClick={() => handleDeleteUser(u)}
+                              title="Fiók törlése"
+                              style={{ padding: '0.32rem 0.65rem', fontSize: '0.78rem' }}
+                            >
+                              🗑️ Törlés
+                            </button>
+                          </div>
                         )}
                       </td>
                     </tr>
