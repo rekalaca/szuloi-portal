@@ -242,9 +242,9 @@ export default function AdminTab({ onNotify }) {
           </div>
         </div>
       ),
-      onConfirm: () => {
-        const updated = users.filter(user => user.id !== u.id);
-        AppStore.saveUsers(updated);
+      onConfirm: async () => {
+        await AppStore.deleteUser(u);
+        const updated = AppStore.getUsers();
         setUsers(updated);
         onNotify?.(`Felhasználó (${u.email}) törölve.`);
       }
