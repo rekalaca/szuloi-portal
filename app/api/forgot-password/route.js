@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server';
 import { sendMail, getPasswordResetTemplate } from '@/lib/mailer';
+import { db } from '@/lib/firebase';
+import { doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore';
 
 const resetStore = new Map();
 
 export async function POST(request) {
   try {
-    const { action, email, code, newPassword } = await request.json();
+    const { action, email, code } = await request.json();
 
     if (!email) {
       return NextResponse.json(
@@ -15,6 +17,7 @@ export async function POST(request) {
     }
 
     const cleanEmail = email.trim().toLowerCase();
+    const docId = cleanEmail.replace(/[^a-zA-Z0-9]/g, '_');
 
     // 1. Send Reset Code
     if (action === 'send') {
@@ -22,6 +25,19 @@ export async function POST(request) {
       const expiresAt = Date.now() + 15 * 60 * 1000;
 
       resetStore.set(cleanEmail, { code: generatedCode, expiresAt });
+
+      if (db) {
+        try {
+          await setDoc(doc(db, 'reset_codes', docId), {
+            code: generatedCode,
+            expiresAt,
+            email: cleanEmail,
+            createdAt: new Date().toISOString()
+          });
+        } catch (dbErr) {
+          console.warn('Firestore reset code save warning:', dbErr.message);
+        }
+      }
 
       try {
         const html = getPasswordResetTemplate(generatedCode, cleanEmail);
@@ -55,7 +71,23 @@ export async function POST(request) {
         );
       }
 
-      const stored = resetStore.get(cleanEmail);
+      let stored = null;
+
+      if (db) {
+        try {
+          const snap = await getDoc(doc(db, 'reset_codes', docId));
+          if (snap.exists()) {
+            stored = snap.data();
+          }
+        } catch (dbErr) {
+          console.warn('Firestore reset code read warning:', dbErr.message);
+        }
+      }
+
+      if (!stored) {
+        stored = resetStore.get(cleanEmail);
+      }
+
       if (!stored) {
         if (code === '654321') {
           return NextResponse.json({ success: true, verified: true });
@@ -67,6 +99,9 @@ export async function POST(request) {
       }
 
       if (Date.now() > stored.expiresAt) {
+        if (db) {
+          try { await deleteDoc(doc(db, 'reset_codes', docId)); } catch {}
+        }
         resetStore.delete(cleanEmail);
         return NextResponse.json(
           { success: false, error: 'A visszaállító kód lejárt.' },
@@ -81,7 +116,11 @@ export async function POST(request) {
         );
       }
 
+      if (db) {
+        try { await deleteDoc(doc(db, 'reset_codes', docId)); } catch {}
+      }
       resetStore.delete(cleanEmail);
+
       return NextResponse.json({
         success: true,
         verified: true,

@@ -1,14 +1,15 @@
 import { NextResponse } from 'next/server';
 import { sendMail, getVerificationEmailTemplate } from '@/lib/mailer';
+import { db } from '@/lib/firebase';
+import { doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore';
 
-// In-memory verification code store for active verification sessions
+// In-memory fallback verification store
 const verificationStore = new Map();
 
 export async function GET() {
   return NextResponse.json({
     status: 'ok',
-    service: 'verify-code',
-    activeSessions: verificationStore.size
+    service: 'verify-code'
   });
 }
 
@@ -34,13 +35,29 @@ export async function POST(request) {
     }
 
     const cleanEmail = email.trim().toLowerCase();
+    const docId = cleanEmail.replace(/[^a-zA-Z0-9]/g, '_');
 
     // 1. Send Code
     if (action === 'send') {
       const generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
       const expiresAt = Date.now() + 15 * 60 * 1000; // 15 mins
 
+      // Save to in-memory fallback
       verificationStore.set(cleanEmail, { code: generatedCode, expiresAt });
+
+      // Save to Firestore for cross-lambda / serverless persistence
+      if (db) {
+        try {
+          await setDoc(doc(db, 'verification_codes', docId), {
+            code: generatedCode,
+            expiresAt,
+            email: cleanEmail,
+            createdAt: new Date().toISOString()
+          });
+        } catch (dbErr) {
+          console.warn('Firestore verification code save warning:', dbErr.message);
+        }
+      }
 
       try {
         const html = getVerificationEmailTemplate(generatedCode, cleanEmail);
@@ -74,9 +91,27 @@ export async function POST(request) {
         );
       }
 
-      const stored = verificationStore.get(cleanEmail);
+      let stored = null;
+
+      // Try reading from Firestore first
+      if (db) {
+        try {
+          const snap = await getDoc(doc(db, 'verification_codes', docId));
+          if (snap.exists()) {
+            stored = snap.data();
+          }
+        } catch (dbErr) {
+          console.warn('Firestore verification code read warning:', dbErr.message);
+        }
+      }
+
+      // Fallback to in-memory store if Firestore didn't return
       if (!stored) {
-        // Fallback for default test code
+        stored = verificationStore.get(cleanEmail);
+      }
+
+      if (!stored) {
+        // Fallback for default dev test code
         if (code === '123456') {
           return NextResponse.json({ success: true, verified: true });
         }
@@ -87,6 +122,9 @@ export async function POST(request) {
       }
 
       if (Date.now() > stored.expiresAt) {
+        if (db) {
+          try { await deleteDoc(doc(db, 'verification_codes', docId)); } catch {}
+        }
         verificationStore.delete(cleanEmail);
         return NextResponse.json(
           { success: false, error: 'A megerősítő kód érvényessége lejárt (15 perc).' },
@@ -101,8 +139,12 @@ export async function POST(request) {
         );
       }
 
-      // Successfully verified
+      // Successfully verified - clean up
+      if (db) {
+        try { await deleteDoc(doc(db, 'verification_codes', docId)); } catch {}
+      }
       verificationStore.delete(cleanEmail);
+
       return NextResponse.json({
         success: true,
         verified: true,
