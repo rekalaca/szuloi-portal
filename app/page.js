@@ -40,18 +40,32 @@ export default function HomePage() {
 
   // Toast
   const [toastMsg, setToastMsg] = useState('');
+  const [, setStoreVersion] = useState(0);
 
   useEffect(() => {
-    AppStore.init();
+    const handleUpdate = () => {
+      setStoreVersion(v => v + 1);
+    };
+    window.addEventListener('szechenyi_store_updated', handleUpdate);
+
+    const initApp = async () => {
+      await AppStore.init();
+      const user = AppStore.getCurrentUser();
+      if (user) {
+        setCurrentUser(user);
+      }
+      setMounted(true);
+      setStoreVersion(v => v + 1);
+    };
+    initApp();
+
     const storedTheme = localStorage.getItem('szechenyi_theme') || 'dark';
     setTheme(storedTheme);
     document.documentElement.setAttribute('data-theme', storedTheme);
 
-    const user = AppStore.getCurrentUser();
-    if (user) {
-      setCurrentUser(user);
-    }
-    setMounted(true);
+    return () => {
+      window.removeEventListener('szechenyi_store_updated', handleUpdate);
+    };
   }, []);
 
   // Automatic 3-day Nameday reminder check
@@ -93,7 +107,7 @@ export default function HomePage() {
     showToast(`Üdvözöljük, ${user.email}!`);
   };
 
-  const handleVerifySuccess = () => {
+  const handleVerifySuccess = async () => {
     if (!pendingVerification) return;
 
     const { email, childName, password } = pendingVerification;
@@ -111,7 +125,7 @@ export default function HomePage() {
     };
 
     users.push(newUser);
-    AppStore.saveUsers(users);
+    await AppStore.saveUsers(users);
     AppStore.setCurrentUser(newUser);
     setCurrentUser(newUser);
     setPendingVerification(null);
