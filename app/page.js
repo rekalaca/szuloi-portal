@@ -68,6 +68,15 @@ export default function HomePage() {
     };
   }, []);
 
+  // Mindig görgessen az oldal legtetejére fülváltáskor
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    }
+  }, [activeTab]);
+
   // Automatic 3-day Nameday reminder check
   useEffect(() => {
     if (currentUser?.role === 'admin') {

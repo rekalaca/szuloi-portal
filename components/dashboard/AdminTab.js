@@ -93,6 +93,11 @@ export default function AdminTab({ onNotify }) {
         .then(data => setNamedayStatus(data))
         .catch(console.error);
     }
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    }
   }, [adminSection]);
 
   const handleSendTestNamedayReminder = async (teacher) => {
