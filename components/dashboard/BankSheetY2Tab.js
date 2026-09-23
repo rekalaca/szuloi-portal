@@ -79,7 +79,7 @@ export default function BankSheetY2Tab({ currentUser }) {
       { label: 'Egyéb bevételek:', value: `${(summary.otherIncome || 25000).toLocaleString('hu-HU')} Ft` },
       { label: 'Záró OTP Számlaegyenleg:', value: `${(summary.closingOtpBalance || 1247421).toLocaleString('hu-HU')} Ft` },
       { label: 'Készpénzes Bevételek (Szilágyi V. 60k + Angel Zs. 40k):', value: `+${cashFlow.formattedTotalIncome}` },
-      { label: 'Készpénzes Kiadások (Névnapok + közös főzés):', value: `-${cashFlow.formattedTotalExpenses}` },
+      { label: 'Készpénzes Kiadások (Névnapok + főzés + kirándulás):', value: `-${cashFlow.formattedTotalExpenses}` },
       { label: 'Készpénz Záró Maradvány:', value: `${cashFlow.formattedClosingCashBalance}` },
       { label: 'Teljes Tanévi Vagyon (Bank + Kp):', value: `${cashFlow.formattedGrandTotalClosingBalance}` }
     ];
@@ -145,7 +145,7 @@ export default function BankSheetY2Tab({ currentUser }) {
       { label: 'Egyéb bevételek', value: `${(summary.otherIncome || 25000).toLocaleString('hu-HU')} Ft` },
       { label: 'Záró OTP Számlaegyenleg', value: `${(summary.closingOtpBalance || 1247421).toLocaleString('hu-HU')} Ft` },
       { label: 'Készpénzes Bevételek (Szilágyi V. 60k + Angel Zs. 40k)', value: `+${cashFlow.formattedTotalIncome}` },
-      { label: 'Készpénzes Kiadások (Névnapok + közös főzés)', value: `-${cashFlow.formattedTotalExpenses}` },
+      { label: 'Készpénzes Kiadások (Névnapok + főzés + kirándulás)', value: `-${cashFlow.formattedTotalExpenses}` },
       { label: 'Készpénz Záró Maradvány', value: `${cashFlow.formattedClosingCashBalance}` },
       { label: 'Teljes Tanévi Vagyon (Bank + Kp)', value: `${cashFlow.formattedGrandTotalClosingBalance}` }
     ];
