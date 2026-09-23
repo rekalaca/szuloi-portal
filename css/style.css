@@ -826,9 +826,34 @@ body {
     text-align: right;
 }
 
-.bank-data-table th.col-name,
+.bank-data-table th.col-num,
+.bank-data-table td.col-num {
+    text-align: center;
+    position: sticky;
+    left: 0;
+    width: 44px;
+    min-width: 44px;
+    z-index: 6;
+    background: var(--bg-surface-elevated);
+}
+
 .bank-data-table th.col-num {
+    z-index: 8;
+}
+
+.bank-data-table th.col-name,
+.bank-data-table td.col-name {
     text-align: left;
+    position: sticky;
+    left: 44px;
+    min-width: 200px;
+    z-index: 5;
+    background: var(--bg-surface-elevated);
+    box-shadow: 3px 0 6px rgba(0, 0, 0, 0.18);
+}
+
+.bank-data-table th.col-name {
+    z-index: 7;
 }
 
 .bank-data-table td {
@@ -838,9 +863,9 @@ body {
     font-family: inherit;
 }
 
-.bank-data-table td.col-name,
-.bank-data-table td.col-num {
-    text-align: left;
+.bank-data-table tbody tr:hover td.col-num,
+.bank-data-table tbody tr:hover td.col-name {
+    background-color: var(--bg-card-hover);
 }
 
 .bank-data-table tbody tr:hover {

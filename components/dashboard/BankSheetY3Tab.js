@@ -223,7 +223,7 @@ export default function BankSheetY3Tab({ currentUser }) {
           <table className="data-table">
             <thead>
               <tr>
-                <th style={{ width: '40px' }}>#</th>
+                <th className="col-num" style={{ width: '40px' }}>#</th>
                 <th className="col-name">Tanuló Neve</th>
                 <th>09. hó</th>
                 <th>10. hó</th>
@@ -249,7 +249,7 @@ export default function BankSheetY3Tab({ currentUser }) {
 
                 return (
                   <tr key={r.id} className={isChild ? 'highlighted-row' : ''}>
-                    <td><strong>{r.id}</strong></td>
+                    <td className="col-num"><strong>{r.id}</strong></td>
                     <td className="col-name">
                       {canView ? (
                         <>
@@ -293,7 +293,7 @@ export default function BankSheetY3Tab({ currentUser }) {
             </tbody>
             <tfoot>
               <tr>
-                <td colSpan={2}>Összesen (Havi bevételek)</td>
+                <td colSpan={2} className="col-sticky-total">Összesen (Havi bevételek)</td>
                 <td>{summary.monthlyIncomeTotals.m09 || '0 Ft'}</td>
                 <td>{summary.monthlyIncomeTotals.m10 || '0 Ft'}</td>
                 <td>{summary.monthlyIncomeTotals.m11 || '0 Ft'}</td>

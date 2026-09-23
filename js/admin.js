@@ -77,12 +77,21 @@ class AdminManager {
                     <div class="admin-card form-card">
                         <h3><span class="icon">➕</span> Új tétel rögzítése</h3>
                         <form id="admin-add-finance-form" onsubmit="window.adminManager.handleSaveFinance(event)">
-                            <div class="form-group">
-                                <label for="fin-type">Típus</label>
-                                <select id="fin-type" required class="custom-select">
-                                    <option value="income">🟢 Bevétel (Befizetés, támogatás)</option>
-                                    <option value="expense">🔴 Kiadás (Vásárlás, költség)</option>
-                                </select>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="fin-type">Típus</label>
+                                    <select id="fin-type" required class="custom-select">
+                                        <option value="income">🟢 Bevétel (Befizetés, támogatás)</option>
+                                        <option value="expense">🔴 Kiadás (Vásárlás, költség)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="fin-method">Fizetési mód</label>
+                                    <select id="fin-method" required class="custom-select">
+                                        <option value="bank">🏦 Banki átutalás (OTP)</option>
+                                        <option value="cash">💵 Készpénz (KP)</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="fin-title">Megnevezés / Tárgy *</label>
@@ -127,7 +136,7 @@ class AdminManager {
                                 <thead>
                                     <tr>
                                         <th>Dátum</th>
-                                        <th>Típus</th>
+                                        <th>Típus / Mód</th>
                                         <th>Megnevezés</th>
                                         <th>Összeg</th>
                                         <th>Művelet</th>
@@ -140,6 +149,9 @@ class AdminManager {
                                             <td>
                                                 <span class="badge ${f.type === 'income' ? 'badge-success' : 'badge-danger'}">
                                                     ${f.type === 'income' ? 'Bevétel' : 'Kiadás'}
+                                                </span>
+                                                <span class="badge ${f.paymentMethod === 'cash' ? 'badge-warning' : 'badge-primary'}">
+                                                    ${f.paymentMethod === 'cash' ? '💵 KP' : '🏦 Bank'}
                                                 </span>
                                             </td>
                                             <td>
@@ -304,6 +316,7 @@ class AdminManager {
     handleSaveFinance(e) {
         e.preventDefault();
         const type = document.getElementById('fin-type').value;
+        const paymentMethod = document.getElementById('fin-method')?.value || 'bank';
         const title = document.getElementById('fin-title').value.trim();
         const amount = Number(document.getElementById('fin-amount').value);
         const date = document.getElementById('fin-date').value;
@@ -318,6 +331,7 @@ class AdminManager {
 
         window.dataStore.addFinance({
             type,
+            paymentMethod,
             title,
             amount,
             date,

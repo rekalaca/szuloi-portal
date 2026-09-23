@@ -219,7 +219,7 @@ export default function BankSheetY1Tab({ currentUser }) {
           <table className="data-table">
             <thead>
               <tr>
-                <th style={{ width: '40px' }}>#</th>
+                <th className="col-num" style={{ width: '40px' }}>#</th>
                 <th className="col-name">Tanuló Neve</th>
                 <th>09. hó</th>
                 <th>10. hó</th>
@@ -245,7 +245,7 @@ export default function BankSheetY1Tab({ currentUser }) {
 
                 return (
                   <tr key={r.id} className={isChild ? 'highlighted-row' : ''}>
-                    <td><strong>{r.id}</strong></td>
+                    <td className="col-num"><strong>{r.id}</strong></td>
                     <td className="col-name">
                       {canView ? (
                         <>
@@ -287,7 +287,7 @@ export default function BankSheetY1Tab({ currentUser }) {
             </tbody>
             <tfoot>
               <tr>
-                <td colSpan={2}>Összesen</td>
+                <td colSpan={2} className="col-sticky-total">Összesen</td>
                 <td>{summary.monthlyIncomeTotals.m09}</td>
                 <td>{summary.monthlyIncomeTotals.m10}</td>
                 <td>{summary.monthlyIncomeTotals.m11}</td>

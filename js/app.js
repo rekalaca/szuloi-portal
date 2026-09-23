@@ -715,7 +715,7 @@ class App {
                         <div class="bank-summary-box" style="border: 1px solid var(--brand-accent); grid-column: span 1 / -1;">
                             <strong style="color: var(--brand-accent);">🏦 OTP SZÁMLA ZÁRÓ EGYENLEG:</strong>
                             <div class="val" style="font-size: 1.4rem; color: var(--brand-accent);">${summary.closingOtpBalance.toLocaleString('hu-HU')} Ft</div>
-                            <small class="text-muted">(Áthozott: 627 081 + Befizetések: 714 000 - Kiadás: 109 660 + Egyéb bevétel: 16 000 = 1 247 421 Ft)</small>
+                            <small class="text-muted">(Áthozott: 627 081 + Befizetések: 714 000 - Kiadás: 118 660 + Egyéb bevétel: 25 000 = 1 247 421 Ft)</small>
                         </div>
                     </div>
                 </div>

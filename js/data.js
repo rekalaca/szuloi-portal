@@ -159,7 +159,7 @@ const DEFAULT_BANK_SUMMARY_Y1 = {
 // ==========================================================================
 const DEFAULT_BANK_RECORDS_Y2 = [
     { id: 1, name: "Ágoston Alex", m09: "10 000 Ft", m10: "10 000 Ft", m11: "", m12: "", m01: "", m02: "", m03: "", m04: "", m05: "", m06: "", total: "20 000 Ft", debt: "0 Ft", trip: "40 000 Ft", prevDebt: "", note: "" },
-    { id: 2, name: "Angel Zsombor", m09: "", m10: "20 000 Ft", m11: "", m12: "", m01: "", m02: "", m03: "", m04: "", m05: "", m06: "", total: "20 000 Ft", debt: "0 Ft", trip: "", prevDebt: "", note: "" },
+    { id: 2, name: "Angel Zsombor", m09: "", m10: "20 000 Ft", m11: "", m12: "", m01: "", m02: "", m03: "", m04: "", m05: "", m06: "", total: "20 000 Ft", debt: "0 Ft", trip: "40 000 Ft", prevDebt: "", note: "Kirándulás készpénzben fizetve (40 000 Ft)" },
     { id: 3, name: "Balázs Bence", m09: "", m10: "20 000 Ft", m11: "", m12: "", m01: "", m02: "", m03: "", m04: "", m05: "", m06: "", total: "20 000 Ft", debt: "0 Ft", trip: "40 000 Ft", prevDebt: "", note: "" },
     { id: 4, name: "Bartha Levente", m09: "", m10: "20 000 Ft", m11: "", m12: "", m01: "", m02: "", m03: "", m04: "", m05: "", m06: "", total: "20 000 Ft", debt: "0 Ft", trip: "40 000 Ft", prevDebt: "", note: "" },
     { id: 5, name: "Czirják Róbert Krisztián", m09: "", m10: "", m11: "", m12: "", m01: "", m02: "20 000 Ft", m03: "", m04: "", m05: "", m06: "", total: "20 000 Ft", debt: "0 Ft", trip: "40 000 Ft", prevDebt: "", note: "" },
@@ -182,13 +182,13 @@ const DEFAULT_BANK_RECORDS_Y2 = [
     { id: 22, name: "Mészáros Szabolcs", m09: "", m10: "", m11: "20 000 Ft", m12: "", m01: "", m02: "", m03: "", m04: "", m05: "", m06: "", total: "20 000 Ft", debt: "0 Ft", trip: "40 000 Ft", prevDebt: "", note: "" },
     { id: 23, name: "Mizsák Dávid", m09: "", m10: "", m11: "20 000 Ft", m12: "", m01: "", m02: "", m03: "", m04: "", m05: "", m06: "", total: "20 000 Ft", debt: "0 Ft", trip: "40 000 Ft", prevDebt: "", note: "" },
     { id: 24, name: "Molnár Benedek", m09: "2 000 Ft", m10: "2 000 Ft", m11: "2 000 Ft", m12: "2 000 Ft", m01: "2 000 Ft", m02: "2 000 Ft", m03: "2 000 Ft", m04: "2 000 Ft", m05: "2 000 Ft", m06: "2 000 Ft", total: "20 000 Ft", debt: "0 Ft", trip: "40 000 Ft", prevDebt: "", note: "" },
-    { id: 25, name: "Nyíri Ábel", m09: "", m10: "", m11: "20 000 Ft", m12: "", m01: "", m02: "", m03: "", m04: "", m05: "", m06: "", total: "20 000 Ft", debt: "0 Ft", trip: "31 000 Ft", prevDebt: "", note: "" },
+    { id: 25, name: "Nyíri Ábel", m09: "", m10: "", m11: "20 000 Ft", m12: "", m01: "", m02: "", m03: "", m04: "", m05: "", m06: "", total: "20 000 Ft", debt: "0 Ft", trip: "40 000 Ft", prevDebt: "", note: "" },
     { id: 26, name: "Papp Bence József", m09: "", m10: "", m11: "", m12: "", m01: "", m02: "", m03: "20 000 Ft", m04: "", m05: "", m06: "", total: "20 000 Ft", debt: "0 Ft", trip: "40 000 Ft", prevDebt: "", note: "" },
     { id: 27, name: "Papp Hunor Attila", m09: "", m10: "", m11: "", m12: "", m01: "", m02: "", m03: "", m04: "", m05: "12 000 Ft", m06: "", total: "12 000 Ft", debt: "8 000 Ft", trip: "40 000 Ft", prevDebt: "2 000 Ft", note: "" },
     { id: 28, name: "Pfeffer Balázs", m09: "", m10: "", m11: "20 000 Ft", m12: "", m01: "", m02: "", m03: "", m04: "", m05: "", m06: "", total: "20 000 Ft", debt: "0 Ft", trip: "40 000 Ft", prevDebt: "", note: "" },
     { id: 29, name: "Rékási László", m09: "", m10: "", m11: "", m12: "", m01: "10 000 Ft", m02: "", m03: "", m04: "10 000 Ft", m05: "", m06: "", total: "20 000 Ft", debt: "0 Ft", trip: "40 000 Ft", prevDebt: "", note: "" },
     { id: 30, name: "Szép Levente", m09: "", m10: "20 000 Ft", m11: "", m12: "", m01: "", m02: "", m03: "", m04: "", m05: "", m06: "", total: "20 000 Ft", debt: "0 Ft", trip: "40 000 Ft", prevDebt: "", note: "" },
-    { id: 31, name: "Szilágyi Viktor", m09: "", m10: "", m11: "", m12: "", m01: "", m02: "", m03: "", m04: "", m05: "", m06: "", total: "0 Ft", debt: "20 000 Ft", trip: "", prevDebt: "", note: "" },
+    { id: 31, name: "Szilágyi Viktor", m09: "", m10: "", m11: "", m12: "", m01: "", m02: "", m03: "", m04: "", m05: "", m06: "", total: "20 000 Ft", debt: "0 Ft", trip: "40 000 Ft", prevDebt: "", note: "Osztálypénz (20 000 Ft) és kirándulás (40 000 Ft) készpénzben fizetve" },
     { id: 32, name: "Szondi Levente", m09: "", m10: "4 000 Ft", m11: "2 000 Ft", m12: "2 000 Ft", m01: "2 000 Ft", m02: "2 000 Ft", m03: "2 000 Ft", m04: "2 000 Ft", m05: "4 000 Ft", m06: "", total: "20 000 Ft", debt: "0 Ft", trip: "40 000 Ft", prevDebt: "", note: "" },
     { id: 33, name: "Szücs Gábor", m09: "", m10: "", m11: "", m12: "", m01: "", m02: "20 000 Ft", m03: "", m04: "", m05: "", m06: "", total: "20 000 Ft", debt: "0 Ft", trip: "40 000 Ft", prevDebt: "", note: "" },
     { id: 34, name: "Tábori László János", m09: "", m10: "", m11: "20 000 Ft", m12: "", m01: "", m02: "", m03: "", m04: "", m05: "", m06: "", total: "20 000 Ft", debt: "0 Ft", trip: "40 000 Ft", prevDebt: "", note: "" },
@@ -198,20 +198,47 @@ const DEFAULT_BANK_RECORDS_Y2 = [
 ];
 
 const DEFAULT_BANK_SUMMARY_Y2 = {
-    monthlyIncomeTotals: { m09: "52 000 Ft", m10: "248 000 Ft", m11: "124 000 Ft", m12: "20 000 Ft", m01: "28 000 Ft", m02: "94 000 Ft", m03: "34 000 Ft", m04: "14 000 Ft", m05: "98 000 Ft", m06: "2 000 Ft", total: "714 000 Ft", debtTotal: "26 000 Ft", tripTotal: "1 391 000 Ft" },
+    monthlyIncomeTotals: { m09: "52 000 Ft", m10: "248 000 Ft", m11: "124 000 Ft", m12: "20 000 Ft", m01: "28 000 Ft", m02: "94 000 Ft", m03: "34 000 Ft", m04: "14 000 Ft", m05: "98 000 Ft", m06: "2 000 Ft", total: "714 000 Ft", debtTotal: "6 000 Ft", tripTotal: "1 480 000 Ft" },
     monthlyExpenses: [
         { name: "Névnapok", m09: "1 500 Ft", m10: "", m11: "", m12: "", m01: "", m02: "36 919 Ft", m03: "", m04: "", m05: "", m06: "", total: "38 419 Ft" },
         { name: "Banki költség", m09: "3 632 Ft", m10: "225 Ft", m11: "225 Ft", m12: "-273 Ft", m01: "", m02: "863 Ft", m03: "344 Ft", m04: "", m05: "", m06: "", total: "5 016 Ft" },
-        { name: "Banki költség kp felv.", m09: "", m10: "", m11: "", m12: "", m01: "", m02: "39 000 Ft", m03: "10 000 Ft", m04: "", m05: "17 225 Ft", m06: "", total: "66 225 Ft" }
+        { name: "Banki költség kp felv.", m09: "", m10: "", m11: "", m12: "", m01: "", m02: "39 000 Ft", m03: "10 000 Ft", m04: "", m05: "17 225 Ft", m06: "", total: "66 225 Ft" },
+        { name: "Egyéb kiadások", m09: "", m10: "", m11: "", m12: "", m01: "", m02: "", m03: "", m04: "", m05: "9 000 Ft", m06: "", total: "9 000 Ft" }
     ],
-    monthlyExpenseTotals: { m09: "5 132 Ft", m10: "225 Ft", m11: "225 Ft", m12: "-273 Ft", m01: "0 Ft", m02: "39 863 Ft", m03: "47 263 Ft", m04: "0 Ft", m05: "17 225 Ft", m06: "0 Ft", total: "109 660 Ft" },
+    monthlyExpenseTotals: { m09: "5 132 Ft", m10: "225 Ft", m11: "225 Ft", m12: "-273 Ft", m01: "0 Ft", m02: "39 863 Ft", m03: "47 263 Ft", m04: "0 Ft", m05: "26 225 Ft", m06: "0 Ft", total: "118 660 Ft" },
     carriedForward2024: 627081,
     yearIncome2025: 714000,
     totalOtpIncome: 1341081,
-    totalExpenses: 109660,
-    netBalance: 1231421,
-    otherIncome: 16000, // Egyéb bevétel: 16 000 Ft
+    totalExpenses: 118660,
+    netBalance: 1222421,
+    otherIncome: 25000,
     closingOtpBalance: 1247421
+};
+
+const DEFAULT_CASH_FLOW_Y2 = {
+    incomes: [
+        { id: 1, date: "2025/2026. tanév", studentName: "Szilágyi Viktor", description: "2. tanévi osztálypénz (20 000 Ft) készpénzes befizetése", amount: 20000, formattedAmount: "20 000 Ft", category: "Osztálypénz" },
+        { id: 2, date: "2025/2026. tanév", studentName: "Angel Zsombor", description: "Kirándulási díj (40 000 Ft) készpénzes befizetése", amount: 40000, formattedAmount: "40 000 Ft", category: "Kirándulás" },
+        { id: 3, date: "2025/2026. tanév", studentName: "Szilágyi Viktor", description: "Kirándulási díj (40 000 Ft) készpénzes befizetése", amount: 40000, formattedAmount: "40 000 Ft", category: "Kirándulás" }
+    ],
+    expenses: [
+        { id: 1, date: "2025.09.15.", description: "Névnap", amount: 4198, formattedAmount: "4 198 Ft", category: "Névnap" },
+        { id: 2, date: "2025.11.17.", description: "Névnap", amount: 9990, formattedAmount: "9 990 Ft", category: "Névnap" },
+        { id: 3, date: "2026. február", description: "Sütipénz bálra", amount: 12000, formattedAmount: "12 000 Ft", category: "Sütipénz" },
+        { id: 4, date: "2026.03.12.", description: "Névnap", amount: 1800, formattedAmount: "1 800 Ft", category: "Névnap" },
+        { id: 5, date: "2026.03.27.", description: "Névnap", amount: 1945, formattedAmount: "1 945 Ft", category: "Névnap" },
+        { id: 6, date: "2026.05.28.", description: "Névnap", amount: 1395, formattedAmount: "1 395 Ft", category: "Névnap" },
+        { id: 7, date: "2026.05.28.", description: "Főzés", amount: 2000, formattedAmount: "2 000 Ft", category: "Főzés" },
+        { id: 8, date: "2026. május", description: "Főzés", amount: 13129, formattedAmount: "13 129 Ft", category: "Főzés" }
+    ],
+    totalIncome: 100000,
+    formattedTotalIncome: "100 000 Ft",
+    totalExpenses: 46457,
+    formattedTotalExpenses: "46 457 Ft",
+    closingCashBalance: 53543,
+    formattedClosingCashBalance: "53 543 Ft",
+    grandTotalClosingBalance: 1300964,
+    formattedGrandTotalClosingBalance: "1 300 964 Ft"
 };
 
 // ==========================================================================

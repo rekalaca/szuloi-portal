@@ -11,8 +11,10 @@ export default function AdminTab({ onNotify }) {
 
   // Finances state
   const [finances, setFinances] = useState(() => AppStore.getFinances());
+  const [finMethodFilter, setFinMethodFilter] = useState('all'); // 'all' | 'bank' | 'cash'
   const [finForm, setFinForm] = useState({
     type: 'income',
+    paymentMethod: 'bank', // 'bank' | 'cash'
     category: 'class_fee', // income: 'class_fee' | 'trip' | 'arrears' | 'other_income' ; expense: 'nameday' | 'bank_cost' | 'cash_withdrawal' | 'other_expense'
     studentName: students[0] || '',
     note: '',
@@ -123,30 +125,33 @@ export default function AdminTab({ onNotify }) {
     if (!finForm.amount) return;
 
     let computedTitle = '';
+    const methodTag = finForm.paymentMethod === 'cash' ? ' (💵 Készpénz)' : ' (🏦 Bank)';
     if (finForm.type === 'income') {
       if (finForm.category === 'class_fee') {
-        computedTitle = `[Osztálypénz] ${finForm.studentName || 'Tanuló'}`;
+        computedTitle = `[Osztálypénz] ${finForm.studentName || 'Tanuló'}${methodTag}`;
       } else if (finForm.category === 'trip') {
-        computedTitle = `[Kirándulás] ${finForm.studentName || 'Tanuló'}`;
+        computedTitle = `[Kirándulás] ${finForm.studentName || 'Tanuló'}${methodTag}`;
       } else if (finForm.category === 'arrears') {
-        computedTitle = `[Elmaradás rendezése] ${finForm.studentName || 'Tanuló'}`;
+        computedTitle = `[Elmaradás rendezése] ${finForm.studentName || 'Tanuló'}${methodTag}`;
       } else {
-        computedTitle = `[Egyéb bevétel] ${finForm.note || 'Egyéb forrás'}`;
+        computedTitle = `[Egyéb bevétel] ${finForm.note || 'Egyéb forrás'}${methodTag}`;
       }
     } else {
+      const expMethodTag = finForm.paymentMethod === 'cash' ? ' (💵 Kp)' : '';
       if (finForm.category === 'nameday') {
-        computedTitle = `[Névnap] ${finForm.note || 'Tanári köszöntés'}`;
+        computedTitle = `[Névnap] ${finForm.note || 'Tanári köszöntés'}${expMethodTag}`;
       } else if (finForm.category === 'bank_cost') {
         computedTitle = `[Banki költség] Számlavezetési díj`;
       } else if (finForm.category === 'cash_withdrawal') {
         computedTitle = `[Banki díj] Készpénzfelvételi költség`;
       } else {
-        computedTitle = `[Egyéb kiadás] ${finForm.note || 'Kiadási tétel'}`;
+        computedTitle = `[Egyéb kiadás] ${finForm.note || 'Kiadási tétel'}${expMethodTag}`;
       }
     }
 
     const itemToSave = {
       ...finForm,
+      paymentMethod: finForm.paymentMethod || 'bank',
       title: computedTitle
     };
 
@@ -154,6 +159,7 @@ export default function AdminTab({ onNotify }) {
     setFinances(AppStore.getFinances());
     setFinForm({
       type: finForm.type,
+      paymentMethod: finForm.paymentMethod || 'bank',
       category: finForm.category,
       studentName: finForm.studentName || students[0] || '',
       note: '',
@@ -179,6 +185,17 @@ export default function AdminTab({ onNotify }) {
           <div style={{ background: 'var(--bg-input)', padding: '0.85rem 1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', fontSize: '0.88rem' }}>
             <span className={`badge ${f.type === 'income' ? 'badge-success' : 'badge-danger'}`} style={{ marginRight: '6px' }}>
               {f.type === 'income' ? '+ Bevétel' : '- Kiadás'}
+            </span>
+            <span
+              className="badge"
+              style={{
+                background: f.paymentMethod === 'cash' ? '#fef3c7' : '#e0e7ff',
+                color: f.paymentMethod === 'cash' ? '#92400e' : '#3730a3',
+                border: `1px solid ${f.paymentMethod === 'cash' ? '#fde68a' : '#c7d2fe'}`,
+                marginRight: '6px'
+              }}
+            >
+              {f.paymentMethod === 'cash' ? '💵 Készpénz (KP)' : '🏦 Banki utalás'}
             </span>
             <strong>{f.title}</strong>
             <div style={{ marginTop: '4px', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
@@ -434,191 +451,318 @@ export default function AdminTab({ onNotify }) {
       </div>
 
       {/* 1. FINANCES TAB */}
-      {adminSection === 'finances' && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '1.5rem' }}>
-          {/* Add finance form */}
-          <div className="table-card">
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '1rem' }}>
-              ➕ Új Pénzügyi Tétel Rögzítése (3. Tanév)
-            </h3>
-            <form onSubmit={handleAddFinance}>
-              <div className="form-group">
-                <label>Pénzügyi Művelet Típusa</label>
-                <select
-                  value={finForm.type}
-                  onChange={(e) => {
-                    const newType = e.target.value;
-                    setFinForm(prev => ({
-                      ...prev,
-                      type: newType,
-                      category: newType === 'income' ? 'class_fee' : 'nameday',
-                      amount: newType === 'income' ? '3000' : ''
-                    }));
-                  }}
-                >
-                  <option value="income">🟢 Bevétel (Befizetés, támogatás)</option>
-                  <option value="expense">🔴 Kiadás (Vásárlás, költség)</option>
-                </select>
-              </div>
+      {adminSection === 'finances' && (() => {
+        const bankIncomesTotal = finances
+          .filter(f => f.type === 'income' && f.paymentMethod !== 'cash')
+          .reduce((sum, f) => sum + (Number(f.amount) || 0), 0);
 
-              {/* Income subcategories */}
-              {finForm.type === 'income' && (
+        const cashIncomesTotal = finances
+          .filter(f => f.type === 'income' && f.paymentMethod === 'cash')
+          .reduce((sum, f) => sum + (Number(f.amount) || 0), 0);
+
+        const totalExpensesAmt = finances
+          .filter(f => f.type === 'expense')
+          .reduce((sum, f) => sum + (Number(f.amount) || 0), 0);
+
+        const filteredFinances = finances.filter(f => {
+          if (finMethodFilter === 'cash') return f.paymentMethod === 'cash';
+          if (finMethodFilter === 'bank') return f.paymentMethod !== 'cash';
+          return true;
+        });
+
+        const cashCount = finances.filter(f => f.paymentMethod === 'cash').length;
+        const bankCount = finances.filter(f => f.paymentMethod !== 'cash').length;
+
+        return (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '1.5rem' }}>
+            {/* Add finance form */}
+            <div className="table-card">
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '1rem' }}>
+                ➕ Új Pénzügyi Tétel Rögzítése (3. Tanév)
+              </h3>
+              <form onSubmit={handleAddFinance}>
                 <div className="form-group">
-                  <label>Bevétel Kategóriája (Almenü)</label>
+                  <label>Pénzügyi Művelet Típusa</label>
                   <select
-                    value={finForm.category}
-                    onChange={(e) => setFinForm(prev => ({
-                      ...prev,
-                      category: e.target.value,
-                      amount: e.target.value === 'class_fee' ? '3000' : prev.amount
-                    }))}
-                  >
-                    <option value="class_fee">💰 Osztálypénz (Havi 3 000 Ft)</option>
-                    <option value="trip">🚌 Kirándulás hozzájárulás</option>
-                    <option value="arrears">⚖️ Elmaradás rendezése</option>
-                    <option value="other_income">📦 Egyéb bevétel</option>
-                  </select>
-                </div>
-              )}
-
-              {/* Student selection for class_fee, trip, or arrears */}
-              {finForm.type === 'income' && ['class_fee', 'trip', 'arrears'].includes(finForm.category) && (
-                <div className="form-group">
-                  <label>Tanuló Kiválasztása (37 fős lista) *</label>
-                  <div className="input-with-icon">
-                    <span className="input-icon">🎓</span>
-                    <select
-                      value={finForm.studentName}
-                      onChange={(e) => setFinForm(prev => ({ ...prev, studentName: e.target.value }))}
-                      required
-                    >
-                      {students.map((name, idx) => (
-                        <option key={idx} value={name}>{idx + 1}. {name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <small style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '4px', display: 'block' }}>
-                    ℹ️ A tétel automatikusan jóváírásra kerül a 3. tanévi banki elszámolásban és a szülői felületen!
-                  </small>
-                </div>
-              )}
-
-              {/* Note field for other_income */}
-              {finForm.type === 'income' && finForm.category === 'other_income' && (
-                <div className="form-group">
-                  <label>Megjegyzés / Bevételi Forrás *</label>
-                  <input
-                    type="text"
-                    placeholder="Pl. Támogatás, szülői felajánlás, kamat..."
-                    value={finForm.note}
-                    onChange={(e) => setFinForm(prev => ({ ...prev, note: e.target.value }))}
-                    required
-                  />
-                </div>
-              )}
-
-              {/* Expense subcategories */}
-              {finForm.type === 'expense' && (
-                <div className="form-group">
-                  <label>Kiadás Kategóriája (Almenü)</label>
-                  <select
-                    value={finForm.category}
-                    onChange={(e) => setFinForm(prev => ({ ...prev, category: e.target.value }))}
-                  >
-                    <option value="nameday">🎂 Névnapok</option>
-                    <option value="bank_cost">🏦 Banki költségek</option>
-                    <option value="cash_withdrawal">🏧 Készpénzfelvételi díj</option>
-                    <option value="other_expense">🧾 Egyéb kiadás</option>
-                  </select>
-                </div>
-              )}
-
-              {/* Expense Note for Nameday and Other */}
-              {finForm.type === 'expense' && (finForm.category === 'nameday' || finForm.category === 'other_expense') && (
-                <div className="form-group">
-                  <label>Megjegyzés / Részletek *</label>
-                  <input
-                    type="text"
-                    placeholder={finForm.category === 'nameday' ? 'Pl. Füzesiné Tóth Ildikó virágcsokor' : 'Pl. Rendezvény kellékek, nyomtatás...'}
-                    value={finForm.note}
-                    onChange={(e) => setFinForm(prev => ({ ...prev, note: e.target.value }))}
-                    required
-                  />
-                </div>
-              )}
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-                <div className="form-group">
-                  <label>Összeg (Ft) *</label>
-                  <input
-                    type="number"
-                    placeholder="3000"
-                    value={finForm.amount}
-                    onChange={(e) => setFinForm(prev => ({ ...prev, amount: e.target.value }))}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Dátum *</label>
-                  <input
-                    type="date"
-                    value={finForm.date}
-                    onChange={(e) => setFinForm(prev => ({ ...prev, date: e.target.value }))}
-                    required
-                  />
-                </div>
-              </div>
-
-              <button type="submit" className="btn btn-primary btn-block">
-                💾 Tétel Rögzítése és Könyvelése
-              </button>
-            </form>
-          </div>
-
-          {/* Finances list */}
-          <div className="table-card">
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '1rem' }}>📋 Rögzített Tételek</h3>
-            {finances.length === 0 ? (
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Még nincsenek egyedi tételek rögzítve a 3. tanévre.</p>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '420px', overflowY: 'auto' }}>
-                {finances.map((f) => (
-                  <div
-                    key={f.id}
-                    style={{
-                      background: 'var(--bg-input)',
-                      padding: '0.75rem 1rem',
-                      borderRadius: 'var(--radius-sm)',
-                      border: '1px solid var(--border-color)',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center'
+                    value={finForm.type}
+                    onChange={(e) => {
+                      const newType = e.target.value;
+                      setFinForm(prev => ({
+                        ...prev,
+                        type: newType,
+                        category: newType === 'income' ? 'class_fee' : 'nameday',
+                        amount: newType === 'income' ? '3000' : ''
+                      }));
                     }}
                   >
-                    <div>
-                      <span className={`badge ${f.type === 'income' ? 'badge-success' : 'badge-danger'}`} style={{ marginRight: '6px' }}>
-                        {f.type === 'income' ? '+ Bevétel' : '- Kiadás'}
-                      </span>
-                      <strong>{f.title}</strong>
-                      <small style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.75rem' }}>
-                        {f.date} • {Number(f.amount).toLocaleString('hu-HU')} Ft
-                      </small>
-                    </div>
-                    <button
-                      type="button"
-                      className="btn btn-sm btn-danger"
-                      onClick={() => handleDeleteFinance(f)}
-                      title="Tétel törlése"
+                    <option value="income">🟢 Bevétel (Befizetés, támogatás)</option>
+                    <option value="expense">🔴 Kiadás (Vásárlás, költség)</option>
+                  </select>
+                </div>
+
+                {/* Payment method selector (Bank transfer vs Cash) */}
+                <div className="form-group">
+                  <label>Fizetési Mód / Teljesítés formája *</label>
+                  <select
+                    value={finForm.paymentMethod}
+                    onChange={(e) => setFinForm(prev => ({ ...prev, paymentMethod: e.target.value }))}
+                  >
+                    <option value="bank">🏦 Banki átutalás (OTP Bankszámla)</option>
+                    <option value="cash">💵 Készpénz (Házipénztár / Készpénzes befizetés)</option>
+                  </select>
+                  <small style={{ color: finForm.paymentMethod === 'cash' ? 'var(--brand-accent)' : 'var(--text-muted)', fontSize: '0.75rem', marginTop: '4px', display: 'block', fontWeight: finForm.paymentMethod === 'cash' ? 700 : 400 }}>
+                    {finForm.paymentMethod === 'cash'
+                      ? '💵 Készpénzes tételként kerül rögzítésre és a kimutatásban készpénzes jelöléssel jelenik meg.'
+                      : '🏦 Hivatalos OTP banki átutalásként kerül rögzítésre.'}
+                  </small>
+                </div>
+
+                {/* Income subcategories */}
+                {finForm.type === 'income' && (
+                  <div className="form-group">
+                    <label>Bevétel Kategóriája (Almenü)</label>
+                    <select
+                      value={finForm.category}
+                      onChange={(e) => setFinForm(prev => ({
+                        ...prev,
+                        category: e.target.value,
+                        amount: e.target.value === 'class_fee' ? '3000' : prev.amount
+                      }))}
                     >
-                      🗑️
-                    </button>
+                      <option value="class_fee">💰 Osztálypénz (Havi 3 000 Ft)</option>
+                      <option value="trip">🚌 Kirándulás hozzájárulás</option>
+                      <option value="arrears">⚖️ Elmaradás rendezése</option>
+                      <option value="other_income">📦 Egyéb bevétel</option>
+                    </select>
                   </div>
-                ))}
+                )}
+
+                {/* Student selection for class_fee, trip, or arrears */}
+                {finForm.type === 'income' && ['class_fee', 'trip', 'arrears'].includes(finForm.category) && (
+                  <div className="form-group">
+                    <label>Tanuló Kiválasztása (37 fős lista) *</label>
+                    <div className="input-with-icon">
+                      <span className="input-icon">🎓</span>
+                      <select
+                        value={finForm.studentName}
+                        onChange={(e) => setFinForm(prev => ({ ...prev, studentName: e.target.value }))}
+                        required
+                      >
+                        {students.map((name, idx) => (
+                          <option key={idx} value={name}>{idx + 1}. {name}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <small style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '4px', display: 'block' }}>
+                      ℹ️ A tétel automatikusan jóváírásra kerül a 3. tanévi banki elszámolásban és a szülői felületen!
+                    </small>
+                  </div>
+                )}
+
+                {/* Note field for other_income */}
+                {finForm.type === 'income' && finForm.category === 'other_income' && (
+                  <div className="form-group">
+                    <label>Megjegyzés / Bevételi Forrás *</label>
+                    <input
+                      type="text"
+                      placeholder="Pl. Támogatás, szülői felajánlás, kamat..."
+                      value={finForm.note}
+                      onChange={(e) => setFinForm(prev => ({ ...prev, note: e.target.value }))}
+                      required
+                    />
+                  </div>
+                )}
+
+                {/* Expense subcategories */}
+                {finForm.type === 'expense' && (
+                  <div className="form-group">
+                    <label>Kiadás Kategóriája (Almenü)</label>
+                    <select
+                      value={finForm.category}
+                      onChange={(e) => setFinForm(prev => ({ ...prev, category: e.target.value }))}
+                    >
+                      <option value="nameday">🎂 Névnapok</option>
+                      <option value="bank_cost">🏦 Banki költségek</option>
+                      <option value="cash_withdrawal">🏧 Készpénzfelvételi díj</option>
+                      <option value="other_expense">🧾 Egyéb kiadás</option>
+                    </select>
+                  </div>
+                )}
+
+                {/* Expense Note for Nameday and Other */}
+                {finForm.type === 'expense' && (finForm.category === 'nameday' || finForm.category === 'other_expense') && (
+                  <div className="form-group">
+                    <label>Megjegyzés / Részletek *</label>
+                    <input
+                      type="text"
+                      placeholder={finForm.category === 'nameday' ? 'Pl. Füzesiné Tóth Ildikó virágcsokor' : 'Pl. Rendezvény kellékek, nyomtatás...'}
+                      value={finForm.note}
+                      onChange={(e) => setFinForm(prev => ({ ...prev, note: e.target.value }))}
+                      required
+                    />
+                  </div>
+                )}
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                  <div className="form-group">
+                    <label>Összeg (Ft) *</label>
+                    <input
+                      type="number"
+                      placeholder="3000"
+                      value={finForm.amount}
+                      onChange={(e) => setFinForm(prev => ({ ...prev, amount: e.target.value }))}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Dátum *</label>
+                    <input
+                      type="date"
+                      value={finForm.date}
+                      onChange={(e) => setFinForm(prev => ({ ...prev, date: e.target.value }))}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <button type="submit" className="btn btn-primary btn-block">
+                  💾 Tétel Rögzítése és Könyvelése
+                </button>
+              </form>
+            </div>
+
+            {/* Finances list */}
+            <div className="table-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, margin: 0 }}>📋 Rögzített Tételek</h3>
+
+                {/* Filter pills: All / Bank / Cash */}
+                <div style={{ display: 'inline-flex', gap: '4px', background: 'var(--bg-input)', padding: '3px', borderRadius: '18px', border: '1px solid var(--border-color)' }}>
+                  <button
+                    type="button"
+                    onClick={() => setFinMethodFilter('all')}
+                    style={{
+                      background: finMethodFilter === 'all' ? 'var(--brand-accent)' : 'transparent',
+                      color: finMethodFilter === 'all' ? '#000' : 'var(--text-muted)',
+                      border: 'none',
+                      borderRadius: '14px',
+                      padding: '3px 8px',
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Összes ({finances.length})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFinMethodFilter('bank')}
+                    style={{
+                      background: finMethodFilter === 'bank' ? '#4338ca' : 'transparent',
+                      color: finMethodFilter === 'bank' ? '#fff' : 'var(--text-muted)',
+                      border: 'none',
+                      borderRadius: '14px',
+                      padding: '3px 8px',
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    🏦 Bank ({bankCount})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFinMethodFilter('cash')}
+                    style={{
+                      background: finMethodFilter === 'cash' ? '#d97706' : 'transparent',
+                      color: finMethodFilter === 'cash' ? '#fff' : 'var(--text-muted)',
+                      border: 'none',
+                      borderRadius: '14px',
+                      padding: '3px 8px',
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    💵 Készpénz ({cashCount})
+                  </button>
+                </div>
               </div>
-            )}
+
+              {/* Quick mini-summary pill bar */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.5rem', marginBottom: '1rem', textAlign: 'center' }}>
+                <div style={{ background: 'var(--bg-input)', padding: '0.45rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
+                  <small style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block' }}>🏦 Banki bevételek</small>
+                  <strong style={{ fontSize: '0.85rem', color: 'var(--success-text)' }}>{bankIncomesTotal.toLocaleString('hu-HU')} Ft</strong>
+                </div>
+                <div style={{ background: 'var(--bg-input)', padding: '0.45rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
+                  <small style={{ fontSize: '0.7rem', color: 'var(--brand-accent)', display: 'block' }}>💵 Készpénz bevétel</small>
+                  <strong style={{ fontSize: '0.85rem', color: 'var(--brand-accent)' }}>{cashIncomesTotal.toLocaleString('hu-HU')} Ft</strong>
+                </div>
+                <div style={{ background: 'var(--bg-input)', padding: '0.45rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)' }}>
+                  <small style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block' }}>🔴 Kiadások</small>
+                  <strong style={{ fontSize: '0.85rem', color: 'var(--danger-text)' }}>{totalExpensesAmt.toLocaleString('hu-HU')} Ft</strong>
+                </div>
+              </div>
+
+              {filteredFinances.length === 0 ? (
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', textAlign: 'center', padding: '1.5rem 0' }}>
+                  {finances.length === 0
+                    ? 'Még nincsenek egyedi tételek rögzítve a 3. tanévre.'
+                    : 'Nincs a kiválasztott szűrésnek megfelelő tétel.'}
+                </p>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '420px', overflowY: 'auto' }}>
+                  {filteredFinances.map((f) => (
+                    <div
+                      key={f.id}
+                      style={{
+                        background: 'var(--bg-input)',
+                        padding: '0.75rem 1rem',
+                        borderRadius: 'var(--radius-sm)',
+                        border: '1px solid var(--border-color)',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap', marginBottom: '3px' }}>
+                          <span className={`badge ${f.type === 'income' ? 'badge-success' : 'badge-danger'}`}>
+                            {f.type === 'income' ? '+ Bevétel' : '- Kiadás'}
+                          </span>
+                          <span
+                            className="badge"
+                            style={{
+                              background: f.paymentMethod === 'cash' ? '#fef3c7' : '#e0e7ff',
+                              color: f.paymentMethod === 'cash' ? '#92400e' : '#3730a3',
+                              border: `1px solid ${f.paymentMethod === 'cash' ? '#fde68a' : '#c7d2fe'}`
+                            }}
+                          >
+                            {f.paymentMethod === 'cash' ? '💵 Készpénz' : '🏦 Banki utalás'}
+                          </span>
+                        </div>
+                        <strong>{f.title}</strong>
+                        <small style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.75rem' }}>
+                          {f.date} • {Number(f.amount).toLocaleString('hu-HU')} Ft
+                        </small>
+                      </div>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-danger"
+                        onClick={() => handleDeleteFinance(f)}
+                        title="Tétel törlése"
+                      >
+                        🗑️
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* 2. NEWS TAB */}
       {adminSection === 'news' && (

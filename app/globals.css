@@ -1051,6 +1051,86 @@ a {
   border-top: 2px solid var(--border-color);
 }
 
+/* Rögzített (Sticky) Tanulónév és Sorszám Oszlop Vízszintes Görgetésnél */
+.data-table th.col-num,
+.data-table td.col-num {
+  position: sticky;
+  left: 0;
+  width: 48px;
+  min-width: 48px;
+  max-width: 48px;
+  text-align: center;
+  z-index: 10;
+  background: var(--bg-card);
+}
+
+.data-table th.col-num {
+  background: var(--bg-header);
+  z-index: 12;
+}
+
+.data-table th.col-name,
+.data-table td.col-name {
+  position: sticky;
+  left: 48px;
+  min-width: 220px;
+  z-index: 9;
+  background: var(--bg-card);
+  box-shadow: 4px 0 8px -2px rgba(0, 0, 0, 0.22);
+}
+
+.data-table th.col-name {
+  background: var(--bg-header);
+  z-index: 11;
+  box-shadow: 4px 0 8px -2px rgba(0, 0, 0, 0.22);
+}
+
+/* Kiadások tábla rögzített első oszlopa */
+.data-table th.col-exp-name,
+.data-table td.col-exp-name {
+  position: sticky;
+  left: 0;
+  min-width: 240px;
+  z-index: 9;
+  background: var(--bg-card);
+  box-shadow: 4px 0 8px -2px rgba(0, 0, 0, 0.22);
+}
+
+.data-table th.col-exp-name {
+  background: var(--bg-header);
+  z-index: 11;
+  box-shadow: 4px 0 8px -2px rgba(0, 0, 0, 0.22);
+}
+
+.data-table tbody tr:hover td.col-num,
+.data-table tbody tr:hover td.col-name,
+.data-table tbody tr:hover td.col-exp-name {
+  background: var(--bg-card-hover);
+}
+
+.data-table tbody tr.highlighted-row td.col-num,
+.data-table tbody tr.highlighted-row td.col-name {
+  background: rgba(212, 175, 55, 0.25) !important;
+}
+
+.data-table tfoot td.col-sticky-total {
+  position: sticky;
+  left: 0;
+  z-index: 10;
+  background: var(--bg-surface-elevated);
+  box-shadow: 4px 0 8px -2px rgba(0, 0, 0, 0.22);
+}
+
+[data-theme="dark"] .data-table tbody tr.highlighted-row td.col-num,
+[data-theme="dark"] .data-table tbody tr.highlighted-row td.col-name {
+  background: #272110 !important;
+}
+
+[data-theme="light"] .data-table tbody tr.highlighted-row td.col-num,
+[data-theme="light"] .data-table tbody tr.highlighted-row td.col-name {
+  background: #fdf6e2 !important;
+}
+
 /* ==========================================================================
    GDPR Privacy Blur & Masking
    ========================================================================== */
@@ -1867,24 +1947,6 @@ a {
 
   .stat-label {
     font-size: 0.74rem;
-  }
-
-  /* Rögzített (Sticky) Tanulónév Oszlop Vízszintes Görgetésnél Mobilon */
-  .data-table th.col-name,
-  .data-table td.col-name {
-    position: sticky;
-    left: 0;
-    z-index: 5;
-    background: var(--bg-surface-elevated);
-    box-shadow: 3px 0 6px rgba(0, 0, 0, 0.15);
-  }
-
-  .data-table tr.highlighted-row td.col-name {
-    background: #272110 !important;
-  }
-
-  [data-theme="light"] .data-table tr.highlighted-row td.col-name {
-    background: #fdf6e2 !important;
   }
 
   /* Mobil görgetési segítség sáv */
