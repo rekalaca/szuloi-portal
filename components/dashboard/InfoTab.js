@@ -31,10 +31,14 @@ export default function InfoTab() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       {/* Teachers List */}
       <div className="table-card">
-        <h3 className="table-title">Oktatóink és Tantárgyak (11. D)</h3>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginBottom: '1.25rem' }}>
-          A 11. D osztályban tanító oktatók és tantárgyaik listája névnaptárral
-        </p>
+        <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
+          <h3 className="table-title" style={{ justifyContent: 'center', margin: '0 auto 0.25rem' }}>
+            👨‍🏫 Oktatóink és Tantárgyak (11. D)
+          </h3>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', margin: '0 auto', maxWidth: '600px' }}>
+            A 11. D osztályban tanító oktatók és tantárgyaik listája névnaptárral
+          </p>
+        </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
           {teachers.map((teacher) => {

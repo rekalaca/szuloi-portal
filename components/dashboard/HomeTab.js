@@ -6,6 +6,9 @@ import { AppStore } from '@/lib/store';
 export default function HomeTab({ currentUser, onNavigateTab }) {
   const students = AppStore.getStudentsList();
   const bankY3 = AppStore.getBankRecordsY3();
+  const settings = AppStore.getSettings();
+  const showTripContribution = settings?.showTripContributionOnHome === true;
+
   const childRecord = currentUser?.childName
     ? bankY3.find((r) => r.name.toLowerCase() === currentUser.childName.toLowerCase())
     : null;
@@ -32,22 +35,24 @@ export default function HomeTab({ currentUser, onNavigateTab }) {
               )}
             </div>
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              <div style={{ background: 'var(--bg-input)', padding: '0.75rem 1.25rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', textAlign: 'center' }}>
+              <div style={{ background: 'var(--bg-input)', padding: '0.75rem 1.25rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', textAlign: 'center', minWidth: '130px' }}>
                 <small style={{ color: 'var(--text-muted)', display: 'block', fontSize: '0.75rem' }}>Befizetett osztálypénz</small>
                 <strong style={{ fontSize: '1.2rem', color: 'var(--success-text)' }}>{childRecord.total}</strong>
               </div>
-              <div style={{ background: 'var(--bg-input)', padding: '0.75rem 1.25rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', textAlign: 'center' }}>
-                <small style={{ color: 'var(--text-muted)', display: 'block', fontSize: '0.75rem' }}>Kirándulás hozzájárulás</small>
-                <strong style={{ fontSize: '1.2rem', color: 'var(--brand-accent)' }}>{childRecord.trip || '0 Ft'}</strong>
-              </div>
-              <div style={{ background: 'var(--bg-input)', padding: '0.75rem 1.25rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', textAlign: 'center' }}>
+              <div style={{ background: 'var(--bg-input)', padding: '0.75rem 1.25rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', textAlign: 'center', minWidth: '130px' }}>
                 <small style={{ color: 'var(--text-muted)', display: 'block', fontSize: '0.75rem' }}>Tartozás (3. tanév)</small>
                 <strong style={{ fontSize: '1.2rem', color: childRecord.debt === '0 Ft' ? 'var(--text-main)' : 'var(--danger-text)' }}>
                   {childRecord.debt}
                 </strong>
               </div>
+              {showTripContribution && (
+                <div style={{ background: 'var(--bg-input)', padding: '0.75rem 1.25rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', textAlign: 'center', minWidth: '130px' }}>
+                  <small style={{ color: 'var(--text-muted)', display: 'block', fontSize: '0.75rem' }}>Kirándulás hozzájárulás</small>
+                  <strong style={{ fontSize: '1.2rem', color: 'var(--brand-accent)' }}>{childRecord.trip || '0 Ft'}</strong>
+                </div>
+              )}
               {childRecord.prevDebt && (
-                <div style={{ background: 'rgba(239, 68, 68, 0.1)', padding: '0.75rem 1.25rem', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(239, 68, 68, 0.3)', textAlign: 'center' }}>
+                <div style={{ background: 'rgba(239, 68, 68, 0.1)', padding: '0.75rem 1.25rem', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(239, 68, 68, 0.3)', textAlign: 'center', minWidth: '130px' }}>
                   <small style={{ color: 'var(--danger-text)', display: 'block', fontSize: '0.75rem', fontWeight: 700 }}>Korábbi elmaradás</small>
                   <strong style={{ fontSize: '1.2rem', color: 'var(--danger-text)' }}>
                     {childRecord.prevDebt}

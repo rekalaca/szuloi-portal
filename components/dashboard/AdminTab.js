@@ -9,6 +9,9 @@ export default function AdminTab({ onNotify }) {
 
   const students = AppStore.getStudents();
 
+  // Settings state
+  const [settings, setSettings] = useState(() => AppStore.getSettings());
+
   // Finances state
   const [finances, setFinances] = useState(() => AppStore.getFinances());
   const [finMethodFilter, setFinMethodFilter] = useState('all'); // 'all' | 'bank' | 'cash'
@@ -117,6 +120,22 @@ export default function AdminTab({ onNotify }) {
     } finally {
       setTestingTeacherId(null);
     }
+  };
+
+  // --- Handlers for Settings ---
+  const handleToggleTripContribution = async () => {
+    const nextVal = !(settings?.showTripContributionOnHome === true);
+    const updated = {
+      ...settings,
+      showTripContributionOnHome: nextVal
+    };
+    await AppStore.saveSettings(updated);
+    setSettings(AppStore.getSettings());
+    onNotify?.(
+      nextVal
+        ? '🚌 Kirándulási hozzájárulás megjelenítése a szülői főoldalon: BEKAPCSOLVA'
+        : '🚌 Kirándulási hozzájárulás megjelenítése a szülői főoldalon: KIKAPCSOLVA'
+    );
   };
 
   // --- Handlers for Finances ---
@@ -464,17 +483,54 @@ export default function AdminTab({ onNotify }) {
           .filter(f => f.type === 'expense')
           .reduce((sum, f) => sum + (Number(f.amount) || 0), 0);
 
-        const filteredFinances = finances.filter(f => {
-          if (finMethodFilter === 'cash') return f.paymentMethod === 'cash';
-          if (finMethodFilter === 'bank') return f.paymentMethod !== 'cash';
-          return true;
-        });
+        const filteredFinances = [...finances]
+          .filter(f => {
+            if (finMethodFilter === 'cash') return f.paymentMethod === 'cash';
+            if (finMethodFilter === 'bank') return f.paymentMethod !== 'cash';
+            return true;
+          })
+          .reverse();
 
         const cashCount = finances.filter(f => f.paymentMethod === 'cash').length;
         const bankCount = finances.filter(f => f.paymentMethod !== 'cash').length;
 
         return (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '1.5rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            {/* Setting: Show Trip Contribution on Home */}
+            <div
+              className="table-card"
+              style={{
+                padding: '0.85rem 1.25rem',
+                marginBottom: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '0.75rem',
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border-color)'
+              }}
+            >
+              <div>
+                <strong style={{ fontSize: '0.92rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  🚌 Kirándulási hozzájárulás megjelenítése a szülői főoldalon
+                </strong>
+                <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                  Ha be van kapcsolva, a szülők a 3. tanévi gyermek adatainál látják a kirándulás hozzájárulási összeget (év végi elszámoláskor ajánlott).
+                </p>
+              </div>
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: 700, fontSize: '0.85rem' }}>
+                <input
+                  type="checkbox"
+                  checked={settings?.showTripContributionOnHome === true}
+                  onChange={handleToggleTripContribution}
+                  style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: 'var(--brand-accent)' }}
+                />
+                <span>{settings?.showTripContributionOnHome ? '✅ Bekapcsolva' : '❌ Kikapcsolva'}</span>
+              </label>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '1.5rem' }}>
             {/* Add finance form */}
             <div className="table-card">
               <h3 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '1rem' }}>
@@ -761,6 +817,7 @@ export default function AdminTab({ onNotify }) {
               )}
             </div>
           </div>
+        </div>
         );
       })()}
 

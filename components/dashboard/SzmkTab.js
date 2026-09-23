@@ -8,9 +8,9 @@ export default function SzmkTab() {
 
   return (
     <div>
-      <div style={{ marginBottom: '1.5rem' }}>
+      <div style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
         <h2 style={{ fontSize: '1.4rem', fontWeight: 800 }}>👨‍👩‍👧‍👦 Szülői Munkaközösség (SZMK) Elérhetőségek</h2>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', margin: '0.35rem auto 0', maxWidth: '600px' }}>
           Kérdés, kérés esetén forduljon bizalommal a 11. D osztály SZMK képviselőihez!
         </p>
       </div>

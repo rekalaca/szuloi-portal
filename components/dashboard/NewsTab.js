@@ -8,13 +8,11 @@ export default function NewsTab() {
 
   return (
     <div>
-      <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-        <div>
-          <h2 style={{ fontSize: '1.4rem', fontWeight: 800 }}>📰 Hírek, Közlemények & Események</h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>
-            A 11. D osztály szülői munkaközösségének és iskolavezetésének hivatalos tájékoztatói
-          </p>
-        </div>
+      <div style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
+        <h2 style={{ fontSize: '1.4rem', fontWeight: 800 }}>📰 Hírek, Közlemények & Események</h2>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', margin: '0.35rem auto 0', maxWidth: '600px' }}>
+          A 11. D osztály szülői munkaközösségének és iskolavezetésének hivatalos tájékoztatói
+        </p>
       </div>
 
       <div className="news-grid">

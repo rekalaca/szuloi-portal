@@ -358,8 +358,16 @@
    4. OKOSTELEFON NÉZET (@media max-width: 680px)
    ========================================================================== */
 @media (max-width: 680px) {
+    html, body, .app-container {
+        max-width: 100vw;
+        overflow-x: clip !important;
+    }
+
     .site-header {
-        padding: 0.65rem 0.9rem;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 500 !important;
+        padding: 0.45rem 0.65rem;
     }
 
     .header-logo {

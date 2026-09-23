@@ -162,52 +162,52 @@ export default function BankSheetY2Tab({ currentUser }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <div className="table-card">
-        <div className="table-header-row">
-          <div>
-            <h3 className="table-title">🏦 2. tanév (2025/2026) Banki Elszámolás</h3>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-              Havi 3 000 Ft-os osztálypénz és kirándulási befizetések hivatalos OTP bankkivonat szerinti nyilvántartása
-            </p>
-          </div>
+        <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
+          <h3 className="table-title" style={{ justifyContent: 'center', margin: '0 auto 0.35rem' }}>
+            🏦 2. tanév (2025/2026) Banki Elszámolás
+          </h3>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: '0 auto', maxWidth: '650px' }}>
+            Havi 3 000 Ft-os osztálypénz és kirándulási befizetések hivatalos OTP bankkivonat szerinti nyilvántartása
+          </p>
+        </div>
 
-          <div style={{ display: 'flex', gap: '0.65rem', alignItems: 'center', flexWrap: 'wrap' }}>
-            {isAdmin && (
-              <>
-                <button
-                  type="button"
-                  className="btn btn-sm btn-secondary"
-                  onClick={handleExportExcel}
-                  title="Táblázat letöltése Excel (.xlsx) fájlként"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '0.45rem 0.85rem' }}
-                >
-                  📊 Excel (.xlsx)
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-sm btn-secondary"
-                  onClick={handlePrintPDF}
-                  title="Táblázat nyomtatása vagy mentése PDF-ként"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '0.45rem 0.85rem' }}
-                >
-                  📄 PDF / Nyomtatás
-                </button>
-              </>
-            )}
-            <input
-              type="text"
-              placeholder={isAdmin ? "Szűrés tanuló nevére..." : "Szűrés tanuló sorszámára (#)..."}
-              value={filterText}
-              onChange={(e) => setFilterText(e.target.value)}
-              style={{
-                padding: '0.45rem 0.85rem',
-                borderRadius: 'var(--radius-sm)',
-                background: 'var(--bg-input)',
-                border: '1px solid var(--border-color)',
-                color: 'var(--text-main)',
-                fontSize: '0.85rem'
-              }}
-            />
-          </div>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '0.65rem', alignItems: 'center', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
+          {isAdmin && (
+            <>
+              <button
+                type="button"
+                className="btn btn-sm btn-secondary"
+                onClick={handleExportExcel}
+                title="Táblázat letöltése Excel (.xlsx) fájlként"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '0.45rem 0.85rem' }}
+              >
+                📊 Excel (.xlsx)
+              </button>
+              <button
+                type="button"
+                className="btn btn-sm btn-secondary"
+                onClick={handlePrintPDF}
+                title="Táblázat nyomtatása vagy mentése PDF-ként"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '0.45rem 0.85rem' }}
+              >
+                📄 PDF / Nyomtatás
+              </button>
+            </>
+          )}
+          <input
+            type="text"
+            placeholder={isAdmin ? "Szűrés tanuló nevére..." : "Szűrés tanuló sorszámára (#)..."}
+            value={filterText}
+            onChange={(e) => setFilterText(e.target.value)}
+            style={{
+              padding: '0.45rem 0.85rem',
+              borderRadius: 'var(--radius-sm)',
+              background: 'var(--bg-input)',
+              border: '1px solid var(--border-color)',
+              color: 'var(--text-main)',
+              fontSize: '0.85rem'
+            }}
+          />
         </div>
 
         {/* GDPR Privacy Notice for Parents */}
