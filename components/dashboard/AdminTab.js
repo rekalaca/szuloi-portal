@@ -169,7 +169,7 @@ export default function AdminTab({ onNotify }) {
       } else if (finForm.category === 'cash_withdrawal') {
         computedTitle = `[Banki díj] Készpénzfelvételi költség`;
       } else {
-        computedTitle = `[Egyéb kiadás] ${finForm.note || 'Kiadási tétel'}${expMethodTag}`;
+        computedTitle = `[Egyéb] ${finForm.note || 'Kiadási tétel'}${expMethodTag}`;
       }
     }
 
@@ -493,8 +493,7 @@ export default function AdminTab({ onNotify }) {
             if (finMethodFilter === 'cash') return f.paymentMethod === 'cash';
             if (finMethodFilter === 'bank') return f.paymentMethod !== 'cash';
             return true;
-          })
-          .reverse();
+          });
 
         const cashCount = finances.filter(f => f.paymentMethod === 'cash').length;
         const bankCount = finances.filter(f => f.paymentMethod !== 'cash').length;
@@ -645,7 +644,7 @@ export default function AdminTab({ onNotify }) {
                       <option value="nameday">🎂 Névnapok</option>
                       <option value="bank_cost">🏦 Banki költségek</option>
                       <option value="cash_withdrawal">🏧 Készpénzfelvételi díj</option>
-                      <option value="other_expense">🧾 Egyéb kiadás</option>
+                      <option value="other_expense">🧾 Egyéb</option>
                     </select>
                   </div>
                 )}
