@@ -641,7 +641,7 @@ export default function AdminTab({ onNotify }) {
                       value={finForm.category}
                       onChange={(e) => setFinForm(prev => ({ ...prev, category: e.target.value }))}
                     >
-                      <option value="nameday">🎂 Névnapok</option>
+                      <option value="nameday">Névnapok</option>
                       <option value="bank_cost">🏦 Banki költségek</option>
                       <option value="cash_withdrawal">🏧 Készpénzfelvételi díj</option>
                       <option value="other_expense">🧾 Egyéb</option>
@@ -1102,7 +1102,7 @@ export default function AdminTab({ onNotify }) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
               <div>
                 <h3 style={{ fontSize: '1.2rem', fontWeight: 800 }}>
-                  🎂 Tanári Névnapi Automatikus Emlékeztető Rendszer
+                  Tanári Névnapi Automatikus Emlékeztető Rendszer
                 </h3>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '4px' }}>
                   A rendszer automatikusan ellenőrzi a tanárok névnapjait, és <strong>3 nappal a névnap előtt</strong> emlékeztető emailt küld a <strong>rekalaca@gmail.com</strong> címre, hogy időben fel tudjunk készülni (virág, ajándék, köszöntés).

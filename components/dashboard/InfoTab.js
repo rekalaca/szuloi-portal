@@ -70,7 +70,7 @@ export default function InfoTab() {
                 {/* Nameday Display */}
                 {teacher.namedayDisplay && (
                   <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.35rem', marginTop: '2px' }}>
-                    <span>🎂 Névnap:</span>
+                    <span>Névnap:</span>
                     <strong style={{ color: isUpcoming ? 'var(--brand-accent)' : 'var(--text-main)' }}>
                       {teacher.namedayDisplay}
                     </strong>

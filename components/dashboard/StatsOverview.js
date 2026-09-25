@@ -10,21 +10,30 @@ export default function StatsOverview({ stats }) {
     return val;
   };
 
+  const totalBal = stats?.totalBalance ?? stats?.currentBalance;
+  const otpBal = stats?.currentBalance;
+  const cashBal = stats?.cashBalance;
+
   return (
     <div className="top-3-stats-grid">
       <div className="stat-card-mini stat-carried">
         <div className="stat-icon-wrap">📂</div>
         <div className="stat-info">
           <div className="stat-label">Előző évről áthozott összeg</div>
-          <div className="stat-value">{formatFt(stats.broughtForward)}</div>
+          <div className="stat-value">{formatFt(stats?.broughtForward)}</div>
         </div>
       </div>
 
       <div className="stat-card-mini stat-current-otp">
         <div className="stat-icon-wrap">🏦</div>
         <div className="stat-info">
-          <div className="stat-label">Aktuális OTP számla egyenleg</div>
-          <div className="stat-value">{formatFt(stats.currentBalance)}</div>
+          <div className="stat-label">Teljes egyenleg</div>
+          <div className="stat-value">{formatFt(totalBal)}</div>
+          {typeof otpBal === 'number' && typeof cashBal === 'number' && (
+            <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '2px', fontWeight: 500 }}>
+              OTP: {formatFt(otpBal)} • Kp: {formatFt(cashBal)}
+            </div>
+          )}
         </div>
       </div>
 
@@ -32,7 +41,7 @@ export default function StatsOverview({ stats }) {
         <div className="stat-icon-wrap">💳</div>
         <div className="stat-info">
           <div className="stat-label">Havi osztálypénz</div>
-          <div className="stat-value">{formatFt(stats.monthlyFee)}</div>
+          <div className="stat-value">{formatFt(stats?.monthlyFee)}</div>
         </div>
       </div>
     </div>
