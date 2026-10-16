@@ -12,7 +12,8 @@ const STORAGE_KEYS = {
     TEACHERS: 'szechenyi_11d_teachers',
     FINANCES: 'szechenyi_11d_finances',
     SETTINGS: 'szechenyi_11d_settings',
-    CURRENT_USER: 'szechenyi_11d_current_user'
+    CURRENT_USER: 'szechenyi_11d_current_user',
+    LAST_ACTIVITY: 'szechenyi_11d_last_activity'
 };
 
 // Tanáraink hivatalos lista (11. D)

@@ -14,8 +14,16 @@ class AuthManager {
     loadSession() {
         try {
             const saved = localStorage.getItem(STORAGE_KEYS.CURRENT_USER);
-            if (saved) {
+            const lastActivity = localStorage.getItem(STORAGE_KEYS.LAST_ACTIVITY);
+            const timeout = 10 * 60 * 1000; // 10 perc
+
+            if (saved && lastActivity && (Date.now() - Number(lastActivity) <= timeout)) {
                 this.currentUser = JSON.parse(saved);
+                this.updateActivity();
+            } else {
+                this.currentUser = null;
+                localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+                localStorage.removeItem(STORAGE_KEYS.LAST_ACTIVITY);
             }
         } catch (e) {
             console.error('Hiba a munkamenet betöltésekor:', e);
@@ -23,17 +31,27 @@ class AuthManager {
         }
     }
 
+    updateActivity() {
+        localStorage.setItem(STORAGE_KEYS.LAST_ACTIVITY, Date.now().toString());
+    }
+
     saveSession(user) {
         this.currentUser = user;
         localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(user));
+        this.updateActivity();
     }
 
-    logout() {
+    logout(isAuto = false) {
         this.currentUser = null;
         localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+        localStorage.removeItem(STORAGE_KEYS.LAST_ACTIVITY);
         if (window.app) {
             window.app.renderApp();
-            window.app.showToast('👋 Sikeresen kijelentkezett.', 'info');
+            if (isAuto) {
+                window.app.showToast('⚠️ Biztonsági okokból 10 perc inaktivitás után automatikusan kijelentkeztettük.', 'warning');
+            } else {
+                window.app.showToast('👋 Sikeresen kijelentkezett.', 'info');
+            }
         }
     }
 

@@ -942,103 +942,172 @@ export default function AdminTab({ onNotify }) {
       )}
 
       {/* 3. USERS TAB */}
-      {adminSection === 'users' && (
-        <div className="table-card">
-          <div className="table-header-row">
-            <div>
-              <h3 className="table-title">👥 Regisztrált Szülői & Admin Fiókok ({users.length})</h3>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                Tanulónként legfeljebb 2 szülői fiók engedélyezett (GDPR és biztonsági szabály)
-              </p>
+      {adminSection === 'users' && (() => {
+        const sortedUsers = [...users].sort((a, b) => {
+          const childA = (a.childName || '').trim().toLowerCase();
+          const childB = (b.childName || '').trim().toLowerCase();
+
+          const indexA = childA ? students.findIndex(s => s.toLowerCase() === childA) : -1;
+          const indexB = childB ? students.findIndex(s => s.toLowerCase() === childB) : -1;
+
+          const rankA = indexA !== -1 ? indexA : (childA ? 1000 : 2000);
+          const rankB = indexB !== -1 ? indexB : (childB ? 1000 : 2000);
+
+          if (rankA !== rankB) {
+            return rankA - rankB;
+          }
+
+          return (a.email || '').localeCompare(b.email || '', 'hu');
+        });
+
+        return (
+          <div className="table-card">
+            <div className="table-header-row">
+              <div>
+                <h3 className="table-title">👥 Regisztrált Szülői & Admin Fiókok ({users.length})</h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                  A szülők a diákok névsor szerinti helye alapján vannak rendezve. Tanulónként legfeljebb 2 szülői fiók engedélyezett (GDPR és biztonsági szabály).
+                </p>
+              </div>
+            </div>
+
+            <div className="responsive-table-container">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>E-mail cím</th>
+                    <th>Hozzárendelt Tanuló (11. D)</th>
+                    <th>Szerepkör</th>
+                    <th>Státusz</th>
+                    <th>Műveletek</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedUsers.map((u) => {
+                    const regCount = u.childName ? AppStore.getRegistrationCountForChild(u.childName) : 0;
+                    const isMaxed = regCount >= 2;
+                    const studentIndex = u.childName ? students.findIndex(s => s.toLowerCase() === u.childName.trim().toLowerCase()) : -1;
+                    const rosterNum = studentIndex !== -1 ? studentIndex + 1 : null;
+
+                    return (
+                      <tr
+                        key={u.id}
+                        style={{
+                          background: isMaxed ? 'rgba(212, 175, 55, 0.05)' : undefined
+                        }}
+                      >
+                        <td><strong>{u.email}</strong></td>
+                        <td>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                            <div>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                                <strong>
+                                  {u.childName ? (
+                                    <>
+                                      {rosterNum && (
+                                        <span
+                                          style={{
+                                            color: 'var(--brand-accent)',
+                                            marginRight: '5px',
+                                            fontWeight: 800,
+                                            fontSize: '0.88rem'
+                                          }}
+                                        >
+                                          #{rosterNum}
+                                        </span>
+                                      )}
+                                      {u.childName}
+                                    </>
+                                  ) : (
+                                    <span style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>Nincs hozzárendelve</span>
+                                  )}
+                                </strong>
+                                {isMaxed && (
+                                  <span
+                                    className="badge badge-warning"
+                                    style={{
+                                      fontSize: '0.72rem',
+                                      fontWeight: 800,
+                                      background: 'rgba(212, 175, 55, 0.22)',
+                                      color: 'var(--brand-accent)',
+                                      border: '1px solid var(--brand-accent)',
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '3px',
+                                      padding: '2px 8px'
+                                    }}
+                                    title="Mindkét megengedett szülői fiók regisztrálva van ehhez a tanulóhoz"
+                                  >
+                                    🔒 Mindkét regisztráció kihasználva (2/2)
+                                  </span>
+                                )}
+                              </div>
+                              {u.childName && !isMaxed && (
+                                <small style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '2px' }}>
+                                  (Regisztrált szülők száma a diákhoz: {regCount}/2)
+                                </small>
+                              )}
+                            </div>
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-secondary"
+                              onClick={() => setEditingChildUser({ user: u, selectedChild: u.childName || students[0] })}
+                              title="Hozzárendelt tanuló módosítása"
+                              style={{ padding: '0.2rem 0.45rem', fontSize: '0.75rem', borderRadius: '4px', flexShrink: 0 }}
+                            >
+                              ✏️
+                            </button>
+                          </div>
+                        </td>
+                        <td>
+                          {isFixedAdmin(u.email) ? (
+                            <span className="badge badge-warning" style={{ background: 'linear-gradient(135deg, #d4af37, #f39c12)', color: '#000', fontWeight: 800, border: 'none' }}>
+                              👑 SZMK Vezető (Admin)
+                            </span>
+                          ) : (
+                            <span className={`badge ${u.role === 'admin' ? 'badge-warning' : 'badge-primary'}`}>
+                              {u.role === 'admin' ? '👑 Adminisztrátor' : '👤 Szülő'}
+                            </span>
+                          )}
+                        </td>
+                        <td>
+                          <span className="badge badge-success">✓ Megerősítve</span>
+                        </td>
+                        <td>
+                          {isFixedAdmin(u.email) ? (
+                            <span style={{ color: 'var(--text-muted)', fontSize: '1rem', fontWeight: 600 }}>—</span>
+                          ) : (
+                            <div style={{ display: 'flex', gap: '0.45rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                              <button
+                                type="button"
+                                className={`btn btn-sm ${u.role === 'admin' ? 'btn-secondary' : 'btn-primary'}`}
+                                onClick={() => handleToggleAdminRole(u)}
+                                title={u.role === 'admin' ? 'Admin jog megvonása (szülővé tétel)' : 'Adminisztrátori jog adása'}
+                                style={{ padding: '0.32rem 0.65rem', fontSize: '0.78rem' }}
+                              >
+                                {u.role === 'admin' ? '👤 Szülővé tétel' : '👑 Legyen Admin'}
+                              </button>
+                              <button
+                                type="button"
+                                className="btn btn-sm btn-danger"
+                                onClick={() => handleDeleteUser(u)}
+                                title="Fiók törlése"
+                                style={{ padding: '0.32rem 0.65rem', fontSize: '0.78rem' }}
+                              >
+                                🗑️ Törlés
+                              </button>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           </div>
-
-          <div className="responsive-table-container">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>E-mail cím</th>
-                  <th>Hozzárendelt Tanuló (11. D)</th>
-                  <th>Szerepkör</th>
-                  <th>Státusz</th>
-                  <th>Műveletek</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((u) => {
-                  const regCount = u.childName ? AppStore.getRegistrationCountForChild(u.childName) : 0;
-                  return (
-                    <tr key={u.id}>
-                      <td><strong>{u.email}</strong></td>
-                      <td>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
-                          <div>
-                            <strong>{u.childName || <span style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>Nincs hozzárendelve</span>}</strong>
-                            {u.childName && (
-                              <small style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.75rem' }}>
-                                (Regisztrált szülők száma a diákhoz: {regCount}/2)
-                              </small>
-                            )}
-                          </div>
-                          <button
-                            type="button"
-                            className="btn btn-sm btn-secondary"
-                            onClick={() => setEditingChildUser({ user: u, selectedChild: u.childName || students[0] })}
-                            title="Hozzárendelt tanuló módosítása"
-                            style={{ padding: '0.2rem 0.45rem', fontSize: '0.75rem', borderRadius: '4px', flexShrink: 0 }}
-                          >
-                            ✏️
-                          </button>
-                        </div>
-                      </td>
-                      <td>
-                        {isFixedAdmin(u.email) ? (
-                          <span className="badge badge-warning" style={{ background: 'linear-gradient(135deg, #d4af37, #f39c12)', color: '#000', fontWeight: 800, border: 'none' }}>
-                            👑 SZMK Vezető (Admin)
-                          </span>
-                        ) : (
-                          <span className={`badge ${u.role === 'admin' ? 'badge-warning' : 'badge-primary'}`}>
-                            {u.role === 'admin' ? '👑 Adminisztrátor' : '👤 Szülő'}
-                          </span>
-                        )}
-                      </td>
-                      <td>
-                        <span className="badge badge-success">✓ Megerősítve</span>
-                      </td>
-                      <td>
-                        {isFixedAdmin(u.email) ? (
-                          <span style={{ color: 'var(--text-muted)', fontSize: '1rem', fontWeight: 600 }}>—</span>
-                        ) : (
-                          <div style={{ display: 'flex', gap: '0.45rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                            <button
-                              type="button"
-                              className={`btn btn-sm ${u.role === 'admin' ? 'btn-secondary' : 'btn-primary'}`}
-                              onClick={() => handleToggleAdminRole(u)}
-                              title={u.role === 'admin' ? 'Admin jog megvonása (szülővé tétel)' : 'Adminisztrátori jog adása'}
-                              style={{ padding: '0.32rem 0.65rem', fontSize: '0.78rem' }}
-                            >
-                              {u.role === 'admin' ? '👤 Szülővé tétel' : '👑 Legyen Admin'}
-                            </button>
-                            <button
-                              type="button"
-                              className="btn btn-sm btn-danger"
-                              onClick={() => handleDeleteUser(u)}
-                              title="Fiók törlése"
-                              style={{ padding: '0.32rem 0.65rem', fontSize: '0.78rem' }}
-                            >
-                              🗑️ Törlés
-                            </button>
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* 4. EMAIL DISPATCHER TAB (GMAIL SMTP) */}
       {adminSection === 'email' && (

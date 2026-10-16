@@ -103,12 +103,72 @@ export default function HomePage() {
     setTimeout(() => setToastMsg(''), 4000);
   };
 
-  const handleLogout = () => {
+  const handleLogout = (isAuto = false) => {
     AppStore.setCurrentUser(null);
     setCurrentUser(null);
     setActiveTab('home');
-    showToast('Sikeresen kijelentkezett.');
+    if (isAuto) {
+      showToast('⚠️ Biztonsági okokból 10 perc inaktivitás után automatikusan kijelentkeztettük.');
+    } else {
+      showToast('Sikeresen kijelentkezett.');
+    }
   };
+
+  // Automatikus inaktivitás figyelő (10 perc után kijelentkeztetés)
+  useEffect(() => {
+    if (!currentUser) return;
+
+    let lastRecorded = Date.now();
+    AppStore.updateLastActivity();
+
+    const handleUserActivity = () => {
+      const now = Date.now();
+      // Throttle: 5 másodpercenként frissítjük a tárolót
+      if (now - lastRecorded > 5000) {
+        lastRecorded = now;
+        AppStore.updateLastActivity();
+      }
+    };
+
+    const checkInactivity = () => {
+      const user = AppStore.getCurrentUser();
+      if (!user) {
+        handleLogout(true);
+      }
+    };
+
+    // 10 másodpercenként ellenőrizzük az inaktivitást
+    const timer = setInterval(checkInactivity, 10000);
+
+    // Amikor a felhasználó visszatér a lapra / felébred az eszköz
+    const handleFocusOrVisible = () => {
+      if (document.visibilityState === 'visible') {
+        checkInactivity();
+      }
+    };
+
+    // Másik fülön történt kijelentkezés azonnali szinkronizálása
+    const handleStorageChange = (e) => {
+      if (e.key === 'szechenyi_11d_current_user' && !e.newValue) {
+        setCurrentUser(null);
+        setActiveTab('home');
+      }
+    };
+
+    const activityEvents = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click'];
+    activityEvents.forEach((evt) => window.addEventListener(evt, handleUserActivity, { passive: true }));
+    window.addEventListener('focus', handleFocusOrVisible);
+    window.addEventListener('storage', handleStorageChange);
+    document.addEventListener('visibilitychange', handleFocusOrVisible);
+
+    return () => {
+      clearInterval(timer);
+      activityEvents.forEach((evt) => window.removeEventListener(evt, handleUserActivity));
+      window.removeEventListener('focus', handleFocusOrVisible);
+      window.removeEventListener('storage', handleStorageChange);
+      document.removeEventListener('visibilitychange', handleFocusOrVisible);
+    };
+  }, [currentUser]);
 
   const handleLoginSuccess = (user) => {
     setCurrentUser(user);
