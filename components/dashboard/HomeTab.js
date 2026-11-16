@@ -83,6 +83,12 @@ export default function HomeTab({ currentUser, onNavigateTab }) {
               <code style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--brand-accent)', letterSpacing: '1.2px', display: 'block' }}>
                 11773449-03543429
               </code>
+              <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', marginTop: '0.6rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Kedvezményezett
+              </div>
+              <div style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--brand-accent)' }}>
+                HARSÁNYI TÜNDE
+              </div>
             </div>
           </div>
         </div>
